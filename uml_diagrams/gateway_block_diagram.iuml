@@ -1,0 +1,28 @@
+@startwire
+* ECU2_CAN2 [80x180] #lightgray
+--
+move(40,0)
+* Secure_Gateway [210x180] #lightgray
+    * tc37xEXT [190x100]#white
+        *MCMCAN1 [70x20] #lightgray
+        *GETH [40x20] #lightgray
+        --
+        * MCMCAN2 [70x20] #lightgray
+        * GETH1 [45x20] #lightgray
+        move(-45, -40)
+        * MDIO [40x20] #lightgray
+    * 88Q5050 [190x20] #white
+
+-- 
+move(30,0)
+* tc39x [50x180] #lightgray
+
+Secure_Gateway.tc37xEXT.GETH(50%, 100%) <--> Secure_Gateway.88Q5050 : GETH
+Secure_Gateway.tc37xEXT.GETH1(20, 100%) <--> Secure_Gateway.88Q5050 : GETH
+Secure_Gateway.tc37xEXT.MDIO(20, 100%) <--> Secure_Gateway.88Q5050 : GETH
+
+ECU2_CAN2(100%, 45) <=> Secure_Gateway.tc37xEXT.MCMCAN1 : CAN2
+ECU2_CAN2(100%, 145) <=> Secure_Gateway.88Q5050 : GETH
+Secure_Gateway.tc37xEXT.MCMCAN2(100%, 5) <=> tc39x : CAN1
+Secure_Gateway.88Q5050(100%, 5) <=> tc39x : GETH
+@endwire

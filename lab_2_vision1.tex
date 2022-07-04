@@ -1,0 +1,197 @@
+% This LaTeX was auto-generated from an M-file by MATLAB.
+% To make changes, update the M-file and republish this document.
+
+\documentclass[12pt]{article}
+\usepackage{natbib}
+\usepackage[french]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{lipsum}
+\usepackage{amsmath}
+
+\usepackage{graphicx}
+\usepackage[final]{pdfpages}
+\usepackage[T1]{fontenc}
+%\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{xcolor}
+\usepackage[nottoc,numbib]{tocbibind}% Para que la bibliografia salga en el table of contents
+\colorlet{Mycolor1}{green!10!orange!90!}
+\usepackage{subfigure}
+\usepackage{plantuml}
+\sloppy
+\definecolor{lightgray}{gray}{0.5}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1em}
+
+\bibliographystyle{abbrv}
+
+\begin{document}
+\title{Rapport stage ASTC}
+\author{CHIRINO CAICEDO Melet}
+\begin{titlepage}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+
+\center % Center everything on the page
+ 
+%----------------------------------------------------------------------------------------
+%	HEADING SECTIONS
+%----------------------------------------------------------------------------------------
+
+\textsc{\LARGE Université Toulouse III}\\[0.5cm] % Name of your university/college
+\textsc{\Large Paul Sabatier}\\[1.0cm] % Major heading such as course name
+\textsc{\large Rapport du stage 2021/2022}\\[0.5cm] % Minor heading such as course title
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\HRule \\[0.4cm]
+{ \huge \bfseries Integration d'un logiciel embarqu\'e AUTOSAR en simulation}\\[0.4cm] % Title of your document
+\HRule \\[1.5cm]
+ 
+%----------------------------------------------------------------------------------------
+%	AUTHOR SECTION
+%----------------------------------------------------------------------------------------
+
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\markboth{Pojet en \LaTeX}
+\emph{Auteurs:}\\
+\textsc{CHIRINO} Melet \\ % Your name
+%\textsc{RIBEIRO} Bruno % Your name
+\end{flushleft}
+\end{minipage}
+~
+\begin{minipage}{0.5\textwidth}
+\begin{flushright} \large
+\emph{Tuteur:} \\
+\textsc{RIVI\`ERE} Nicolas  % Supervisor's Name
+\end{flushright}
+\end{minipage}\\[2cm]
+
+% If you don't want a supervisor, uncomment the two lines below and remove the section above
+%\Large \emph{Author:}\\
+%John \textsc{Smith}\\[3cm] % Your name
+
+%----------------------------------------------------------------------------------------
+%	DATE SECTION
+%----------------------------------------------------------------------------------------
+
+{\large \today}\\[2cm] % Date, change the \today to a set date if you want to be precise
+
+%----------------------------------------------------------------------------------------
+%	LOGO SECTION
+%----------------------------------------------------------------------------------------
+
+\includegraphics[width=6in]{img/Logo_UT3.jpg}\\[2cm] % Include a department/university logo - this will require the graphicx package
+ 
+%----------------------------------------------------------------------------------------
+
+\vfill % Fill the rest of the page with whitespace
+
+\end{titlepage}
+
+%\{Contents}
+\tableofcontents
+
+\newpage
+
+%-------------------------- * Introduccion * --------------------------------
+
+\section{Introduction}
+\input{introduccion}
+
+%-------------------------- * Desbcripcion * --------------------------------
+
+\section{Descripcion del stage}
+Ahora si explico bien que es el gateway, para que sirve, como se usa en la vida real y todo eso. Ademas debo decir que el gateway viene con su propio RTOS basado en autosar y que ellos quieren hacer una demo funcional de este gatway para mostrarle a los clientes mas adelante. El gateway viene con un OS ya predefinido para ese microcon pero no arranca porque inicialmente no esta conectado a nada.
+%-------------------------- * Objetivos * --------------------------------
+
+\section{Objectifs}
+\input{objectives}
+
+%-------------------------- * Obligaciones administrativas * --------------------------------
+\section{Obligaciones Administrativas}
+Entre mis obligaciones administrativas esta instalar todo lo del computador, abrir mis cuentas de la empresa, ir a cenas, recibir instrucciones de superiores, hablar ingles con extranjeros, llenar el Jira, documentar todo en git, etc
+%-------------------------- * Obligaciones Tecnicas * --------------------------------
+\section{Obligaciones Tecnicas}
+Mis obligaciones tecnicas se resumen en programar, encontrar bugs, corregirlos, volver a programar, etc etc
+%-------------------------- * Seccion de resultados * --------------------------------
+
+\section{Resultados}
+
+Los resultados son prometedores despues de 3 semanas.
+
+\subsection{Demarrage microsar}
+Microsar al comienzo no queria arrancar porque el sistema simulado no soporta el BUS FlexRay tonces me toco "hackear" la tarjeta para que el sistema operativo viera que si lo soporta (incluso cuando no). Luego me toco hacer unas conexiones en el bus can y en el ASCLIN. 
+
+
+
+%-------------------
+
+%\begin{figure}[!htb]
+%\centering
+%\includegraphics[width=0.2\textwidth]{images/ubication-sipi.png}
+%\caption{Location du village Sipí \cite{sipi:ubicacion}}
+%\label{img:sipi:ubicacion}
+%\end{figure}
+
+% Plantilla para colocar muchas imagenes con un multiplot
+%\begin{figure}[!htb]
+%\centering
+%\subfigure[Photo trouv\'e sur Facebook]{\includegraphics %[height=2in]{images/image18.png}
+%\label{img:sipi-urbana}}
+%\subfigure[Photo prise par la mairie de Sip\'i ]{\includegraphics %[height=2in]{images/alcaldia-sipi.jpg}
+%\label{img:sipi-urbana2}}
+%\subfigure[Photo pris par le quotidien Colombien \textit{CNC Noticias}]{\includegraphics %[width=2.7in]{images/image39.png}
+%\label{img:sipi-urbana3}}
+%\caption{Images de Sip\'i}
+%\end{figure}
+%Sur la Figure \ref{img:sipi:boats} on peut voir les bateaux transportant des personnes et des biens.
+
+
+
+%Para citar la bibliografia haces \cite{Photovoltaic}
+%Para referenciar las imagenes haces lo sgte \ref{fig:schema}
+
+
+\section{Conclusion}
+
+
+%debes hacer esto para meter archivos de otro lado
+%\input{sub_files/Calcul_puissance}
+%\label{anexe:calcul-puissance}
+%-------------------
+
+%Para meter un pdf haces lo sgte 
+%\includepdf{images/Velocidad-Maxima-Energia_13}
+%\label{pdf:vent_vitesse_max}
+%-------------------
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[height=\textheight]{Anexes/RadiacionSolar13 (1).pdf}
+%     \caption{Caption}
+%     \label{fig:radiacion}
+% \end{figure}
+
+
+% Plantilla para colocar muchas imagenes con un multiplot
+%\begin{figure}[!htb]
+%\centering
+%\subfigure[]{\includegraphics [width=2.5in]{lab_2_vision_15.png}}
+%\subfigure[]{\includegraphics [width=2.5in]{lab_2_vision_16.png}}
+%\subfigure[]{\includegraphics [width=2.5in]{lab_2_vision_17.png}}
+%\caption{Paleta de colores}
+%\end{figure}
+
+% Plantilla para poner una imagen cualquiera
+%\begin{figure}[!htb]
+%\centering
+%
+%\caption{Histograma de la imagen}
+%\end{figure}
+
+%\bibliography{Biblio}
+
+\end{document}
