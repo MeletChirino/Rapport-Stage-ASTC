@@ -1,0 +1,11 @@
+@startuml
+title Use Case 2
+
+participant ECU2CAN2 as ecu2
+participant GateWay as gw
+participant TC39x as tc39
+
+gw <- tc39 : ETH_FRAME
+gw -> gw : FwdFrame()
+ecu2 <- gw : CAN_FRAME(EthFrame)
+@enduml
