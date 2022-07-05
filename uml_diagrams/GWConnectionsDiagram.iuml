@@ -1,0 +1,47 @@
+@startuml
+component ECU2_CAN2 {
+	portout CAN as can_ecu2
+	portout ETH as eth_ecu2
+}
+component Gateway {
+	port CAN2 as can2_gw
+	port ETH0 as eth0_gw
+	port CAN1 as can1_gw
+	port ETH1 as eth1_gw
+	component TC37xEXT {
+		port geth0
+		portout MDIO
+		port can1
+		port can2
+		port can0
+	}
+	component 88Q5050 {
+		port p1
+		port p2
+		port p3
+		port p4
+		port p5
+		port p6
+		port p7
+		port p8
+		portout MDIO as mdio_swt
+	}
+}
+component TC39x {
+	portout CAN as can_tc39
+	portout ETH as eth_tc39
+}
+can_ecu2 <--> can2_gw 
+eth_ecu2 <--> eth0_gw
+
+can_tc39 <--> can1_gw 
+eth_tc39 <--> eth1_gw
+
+can2_gw <--> can2
+can1_gw <--> can1
+
+MDIO <-> mdio_swt
+p8 <--> geth0
+eth0_gw <--> p1
+eth1_gw <--> p2
+@enduml
