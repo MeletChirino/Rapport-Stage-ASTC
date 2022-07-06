@@ -1,16 +1,24 @@
 \subsection{First Demo}
 Primero habia un demo en el que habia un sistema de autosar bastante mas simple para el cual tuvimos que hacer varias cosas antes de arrancar, como hackearle el flexray y eso. Luego creamos un modelo en python que enviara datos por CAN. Despues de leer el stack de comunicacion de Autosar me di cuenta que habian varias cosillas que no tenian logica y al parecer el sw wstaba mal planteado. 
-\section{Gateway}
+\subsection{Gateway}
 
-\section{TC37xEXT}
-Al comienzo del proyecto empezamos usando el microcontrolador AURIX TC37x \cite{aurix.tc37x} pero luego leyendo el datasheet del Gateway nos dimos cuenta que en realidad se estaba usando el TC37xEXT \cite{aurix.tc37e} el cual es una version con mas modulos disponibles, entre ellos un modulo CAN y un modulo GETH extras los cuales serian utiles en nuestro proyecto. Otras diferencias se encuentran en la tabla tal.
+\subsection{TC37xEXT}
+Al comienzo del proyecto empezamos usando el microcontrolador AURIX TC37x \cite{aurix.tc37x} pero luego leyendo el datasheet del Gateway nos dimos cuenta que en realidad se estaba usando el TC37xEXT \cite{aurix.tc37e} el cual es una version con mas modulos disponibles, entre ellos un modulo CAN y un modulo GETH extras los cuales serian utiles en nuestro proyecto. Otras diferencias se encuentran en la tabla \ref{tab:tc37x_delta}.
 
 \input{anexes/tc37ex_delta.tex}
 
 Total, tome el modelo que ya existia del tc37x y le agregue los modulos faltantes con sus respectivas start addresses. Al final se integro este nuevo modelo al paquete de produccion de toolbox AURIX. Y seguimos con nuestro proyecto
 
 \subsection{Use Cases}
-Segun la documentacion del gateway, este gateway esta conectado de la sgte forma
+Ya con el microcontrolador correcto podemos pasar al demo precargado en microsar tiene 2 USe cases en los que primero se envia algo por CAN y se le hace un forward por eth y viceversa.
+Segun la documentacion del gateway, este gateway esta conectado de la forma mostrada en la figura \ref{fig:connections-diagram}. 
+
+\begin{figure}[!htb]
+ \centering
+ \includegraphics[width=\textwidth]{img/GWConnectionsDiagram.png}
+ \caption{Gateway Connections Diagram}
+ \label{fig:connections-diagram}
+\end{figure}
 
 \begin{figure}[!htb]
  \centering
@@ -31,12 +39,6 @@ Tonces lo primero que habia que hacer era leer el stack de comunicaciones de aut
 \subsection{Use Case 1}
 En este Gateway hay una cierta cantidad de componentes que hay que modelar porque el software intenta comunicarse con ellos. Cogi el modelo que habia desarrollado en el caso anterior y le puse funcionalidades de Ethernet y de LIN (para un posterior uso) y lo conecte con el AURIX como se muestra en la figura \ref{fig:connections-diagram}
 
-\begin{figure}[!htb]
- \centering
- \includegraphics[width=\textwidth]{img/GWConnectionsDiagram.png}
- \caption{Gateway Connections Diagram}
- \label{fig:connections-diagram}
-\end{figure}
 
 Al comienzo no nos planteamos necesario modelar el switch pero luego nos dimos cuenta que el AURIX se intenta comunicar con el y sin sus respuestas no hay nada que funcione. Aqui les pones un UML de la secuencia de verificacion del switch. Resulta que los switches tienen un modo que se llama RMU que significa Remote management Unit y eso entra en una categoria que se llama Distributed Switch Architecture que permite que puedas controlar un switch con una cpu externa. En este caso se usa en la secuencia de inicializacion para tener acceso a los registros del switch. Para esto se ajusta el modo RMU desde los pines del MDIO y luego se mandan datos por ethernet en el puerto 8 (IMPORTANTE QUE SEA SOLO EL PUERTO 8) con un Tag especial de protocolo SNAP (SubNetwork A Protocol) (en este punto nos toco agregar support para los codigos SNAP en el modelo del microcontrolador) y luego se envia un arespuesta siguiendo el protocolo de Marvell. hasta aqui lo llevo yo el dia de hoy.
 
