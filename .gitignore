@@ -6,3 +6,5 @@ uml_diagrams/**.png
 **.toc
 **.pytxcode
 **.aux
+**.lua
+**.out
