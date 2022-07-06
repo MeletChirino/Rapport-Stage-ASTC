@@ -1,7 +1,14 @@
 \subsection{First Demo}
 Primero habia un demo en el que habia un sistema de autosar bastante mas simple para el cual tuvimos que hacer varias cosas antes de arrancar, como hackearle el flexray y eso. Luego creamos un modelo en python que enviara datos por CAN. Despues de leer el stack de comunicacion de Autosar me di cuenta que habian varias cosillas que no tenian logica y al parecer el sw wstaba mal planteado. 
+\section{Gateway}
 
-Tambien habla de que al comienzo creias que la version inical era la TC37x pero estando en este punto te toco hacer el modelado del microcontrolador.
+\section{TC37xEXT}
+Al comienzo del proyecto empezamos usando el microcontrolador AURIX TC37x \cite{aurix.tc37x} pero luego leyendo el datasheet del Gateway nos dimos cuenta que en realidad se estaba usando el TC37xEXT \cite{aurix.tc37e} el cual es una version con mas modulos disponibles, entre ellos un modulo CAN y un modulo GETH extras los cuales serian utiles en nuestro proyecto. Otras diferencias se encuentran en la tabla tal.
+
+\input{anexes/tc37ex_delta.tex}
+
+Total, tome el modelo que ya existia del tc37x y le agregue los modulos faltantes con sus respectivas start addresses. Al final se integro este nuevo modelo al paquete de produccion de toolbox AURIX. Y seguimos con nuestro proyecto
+
 \subsection{Use Cases}
 Segun la documentacion del gateway, este gateway esta conectado de la sgte forma
 
