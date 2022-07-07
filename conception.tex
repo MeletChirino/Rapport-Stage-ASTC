@@ -1,13 +1,15 @@
 \subsection{ECU's Externas}
 
-Para poder probar cualquier cosa del gateway primero se necesitaban un par de componentes externos que interactuaran con este mismo, como se muestra en la figura \ref{} del datasheet del gateway.
+Para poder probar cualquier cosa del gateway primero se necesitaban un par de componentes externos que interactuaran con este mismo, como se muestra en la figura \ref{fig:devices-diagram} del datasheet del gateway. Por lo tanto, se deben hacer este par de ECU's genericas para que interactuen con este gateway.
 
 \begin{figure}[!htb]
  \centering
- \includegraphics[width=\textwidth]{img/GWConnectionsDiagram.png}
- \caption{Gateway Connections Diagram}
- \label{fig:connections-diagram}
+ \includegraphics[width=\textwidth]{img/GWDemoConnections.PNG}
+ \caption{Gateway Demo Devices}
+ \label{fig:devices-diagram}
 \end{figure}
+
+Para modelar estas ECU's se utilizo pyton con su api de systemC la cual es permite tener un modelo de bajo nivel que puede interactuar con la ECU del gateway en bajo nivel y no al nivel por encima de la simulacion. A estas ECU's genericas se les doto de todos los nodos de comunicaciones soportados por nuestra companhia. Finalmente las ECU's solo enviaban unos cuantos frames CAN y ethernet y notificaban cuando lo recibian. El siguiente paso fue conectarlas a traves de un testbench con nuestra ECU y todo funciono bien.
 
 \subsection{First Demo}
 En el primer demo para hacer la prise en main de AUTOSAR habia un ejemplo el cual debia funcionar con el programa CANoe. Se intento replicar el comportamiento del CANoe haciendole ingenieria inversa a los codigos. Se encontro el CanId necesario para que el ECU recibiera el frame CAN pero al parecer esto sigue un protocolo mas preciso por parte del programa del demo (CANoe). Decidimos dejarlo aqui porque eso no era productivo para el proyecto pero se aprendio muchisimo de autosar y de la forma en como esta estructurado su stack de comunicacion.
@@ -51,22 +53,17 @@ El siguiente paso fue testear el microcontrolador. Para programar en estos micro
 
 Para que el demo arranque nosotros el sw hace ciertas verificaciones de sus componentes como buses de datos funcionales y verifica el correcto comportamiento de ciertos componentes. En este contexto, el switch marvell 88Q5050 juega una papel muy importante en este proceso. El microcontrolador tiene una secuencia muy precisa para verificar el correcto comportamiento del switch, incluyendo leer y escribir registros por el BUS MDIO y descargar todos los registros del switch para luego usarlos. La secuencia de inicializacion esta detallada en el anexo \ref{anexe:switch-init}. Si se enceuntran errores en esta secuencia de inicializacion el sistema operativo no va a inicar los puertos de comunicacion ethernet y por tanto los demos del gateway no van a funcionar de la mejor manera.
 
+
+Un dato interesante de este switch es que ademas de funcionar como switch ethernet, permite un modo de funcionamiento Distributed Switch Architecture el cual permite que una o varias cpus externas le envien comandos a la cpu del switch para modificar registros dentro del switch o para procesar datos antes de enviarlos o cualquier otra cosa. Este modo de comunicacion da muchisima flexibilidad porque con nuestra ECU podemos controlar el funcionamiento a bajo nivel del switch evitando que sea un componente pasivo y dandole el control al desarrollador de todo lo que quiera hacer con el switch.
+
+
+Otro problema que nos encontramos realizando esta parte esque el modelo de comunicaciones ethernet del toolbox aurix no permitia protocolos SNAP y el protocolo mencionado arriba es un protocolo SNAP asi que toco agregar el soporte para protocolos SNAP en el modelo propio de aurix. Se testeo luego el comportamiento inical y todo estaba funcionando bien.
+
 Para modelar el switch se utilizo systemC. Se modelo el Switch con base a la informacion fournie por parte del fabricante y se siguio con el proyecto.
 
 \subsection{Use Case 1}
 
-En la figura \ref{fig:connections-diagram} podemos ver que se tienen
-
-\begin{figure}[!htb]
- \centering
- \includegraphics[width=\textwidth]{img/GWConnectionsDiagram.png}
- \caption{Gateway Connections Diagram}
- \label{fig:connections-diagram}
-\end{figure}
-
-
-%Ya con el microcontrolador correcto podemos pasar al demo precargado en microsar tiene 2 USe cases en los que primero se envia algo por CAN y se le hace un forward por eth y viceversa.
-%Segun la documentacion del gateway, este gateway esta conectado de la forma mostrada en la figura \ref{fig:connections-diagram}. 
+En la figura \ref{fig:block diagram} podemos ver que modulos se comunican con que dispositivo. Para el Use case 1 probamos enviando un mensaje CAN desde la ECU2 con el Id encontrado en el sw de autosar y este funciona ya que envia el mensaje a traves de todo el stack de comunicaciones de autosar pero lastimosamente cuando llega al socket adapter se muere porque los puertos no han sido activados, mala configuracion del switch.
 
 \begin{figure}[!htb]
  \centering
@@ -75,16 +72,18 @@ En la figura \ref{fig:connections-diagram} podemos ver que se tienen
  \label{fig:block diagram}
 \end{figure}
 
-Tonces lo primero que habia que hacer era tener algun tipo de componente que envie datos por el bus can y por ethernet para que sean recibidos por el 
-Tonces lo primero que habia que hacer era leer el stack de comunicaciones de autosar y saber lo que el 
-\subsection{Use Case 1}
-En este Gateway hay una cierta cantidad de componentes que hay que modelar porque el software intenta comunicarse con ellos. Cogi el modelo que habia desarrollado en el caso anterior y le puse funcionalidades de Ethernet y de LIN (para un posterior uso) y lo conecte con el AURIX como se muestra en la figura \ref{fig:connections-diagram}
+\begin{figure}[!htb]
+ \centering
+ \includegraphics[width=\textwidth]{img/GWConnectionsDiagram.png}
+ \caption{Gateway Connections Diagram}
+ \label{fig:connections-diagram}
+\end{figure}
 
-
-Al comienzo no nos planteamos necesario modelar el switch pero luego nos dimos cuenta que el AURIX se intenta comunicar con el y sin sus respuestas no hay nada que funcione. Aqui les pones un UML de la secuencia de verificacion del switch. Resulta que los switches tienen un modo que se llama RMU que significa Remote management Unit y eso entra en una categoria que se llama Distributed Switch Architecture que permite que puedas controlar un switch con una cpu externa. En este caso se usa en la secuencia de inicializacion para tener acceso a los registros del switch. Para esto se ajusta el modo RMU desde los pines del MDIO y luego se mandan datos por ethernet en el puerto 8 (IMPORTANTE QUE SEA SOLO EL PUERTO 8) con un Tag especial de protocolo SNAP (SubNetwork A Protocol) (en este punto nos toco agregar support para los codigos SNAP en el modelo del microcontrolador) y luego se envia un arespuesta siguiendo el protocolo de Marvell. hasta aqui lo llevo yo el dia de hoy.
+%Ya con el microcontrolador correcto podemos pasar al demo precargado en microsar tiene 2 USe cases en los que primero se envia algo por CAN y se le hace un forward por eth y viceversa.
+%Segun la documentacion del gateway, este gateway esta conectado de la forma mostrada en la figura \ref{fig:connections-diagram}. 
 
 Luego muestras que envias un dato desde CAN con el id que es y que no funcionaba porque patata
 
 \subsection{Use Case 2}
 
-Ni idea que voy a poner aqui.
+Ni idea que voy a poner aqui. No estoy seguro de legar tan lejos.
