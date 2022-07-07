@@ -111,13 +111,14 @@
 \input{problematique}
 %
 %-------------------------- * Objetivos * --------------------------------
-
-\section{Objectifs}
-\input{objectives}
+% Esta parte esta explicada en la problematique
+%\section{Objectifs}
+%\input{objectives}
 
 %-------------------------- * Estado del Arte * --------------------------------
 \section{Etat de l'Art}
-Aqui vas a explicar los conceptos fundamentales para entender todo lo que se va a explicar en el desarrollo como: AUTOSAR, VECTOR Microsar, Virtualizacion, nuestro gateway, redes ETH, CAN, LIN, Fr, vlab, 
+\input{etar_dart}
+
 
 %-------------------------- * Conception/Desarrollo * --------------------------------
 \section{Conception}
@@ -150,7 +151,14 @@ Microsar al comienzo no queria arrancar porque el sistema simulado no soporta el
 
 \section{Conclusion}
 
+\newpage
 \section{Anexes}
+
+\subsection{Initialisation du switch}
+\input{anexes/switch-init}
+\label{anexe:switch-init}
+
+
 % ---- TC37x Delta ----
 %\markdownInput{anexes/TC37xEXT_report.md}
 %\label{anexe:tc37ex}
@@ -188,7 +196,7 @@ Microsar al comienzo no queria arrancar porque el sistema simulado no soporta el
 %
 %\caption{Histograma de la imagen}
 %\end{figure}
-
+\newpage
 \bibliography{Biblio}
 
 \end{document}

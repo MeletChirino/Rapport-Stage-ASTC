@@ -1,17 +1,6 @@
-\subsection{First Demo}
-Primero habia un demo en el que habia un sistema de autosar bastante mas simple para el cual tuvimos que hacer varias cosas antes de arrancar, como hackearle el flexray y eso. Luego creamos un modelo en python que enviara datos por CAN. Despues de leer el stack de comunicacion de Autosar me di cuenta que habian varias cosillas que no tenian logica y al parecer el sw wstaba mal planteado. 
-\subsection{Gateway}
+\subsection{ECU's Externas}
 
-\subsection{TC37xEXT}
-Al comienzo del proyecto empezamos usando el microcontrolador AURIX TC37x \cite{aurix.tc37x} pero luego leyendo el datasheet del Gateway nos dimos cuenta que en realidad se estaba usando el TC37xEXT \cite{aurix.tc37e} el cual es una version con mas modulos disponibles, entre ellos un modulo CAN y un modulo GETH extras los cuales serian utiles en nuestro proyecto. Otras diferencias se encuentran en la tabla \ref{tab:tc37x_delta}.
-
-\input{anexes/tc37ex_delta.tex}
-
-Total, tome el modelo que ya existia del tc37x y le agregue los modulos faltantes con sus respectivas start addresses. Al final se integro este nuevo modelo al paquete de produccion de toolbox AURIX. Y seguimos con nuestro proyecto
-
-\subsection{Use Cases}
-Ya con el microcontrolador correcto podemos pasar al demo precargado en microsar tiene 2 USe cases en los que primero se envia algo por CAN y se le hace un forward por eth y viceversa.
-Segun la documentacion del gateway, este gateway esta conectado de la forma mostrada en la figura \ref{fig:connections-diagram}. 
+Para poder probar cualquier cosa del gateway primero se necesitaban un par de componentes externos que interactuaran con este mismo, como se muestra en la figura \ref{} del datasheet del gateway.
 
 \begin{figure}[!htb]
  \centering
@@ -19,6 +8,65 @@ Segun la documentacion del gateway, este gateway esta conectado de la forma most
  \caption{Gateway Connections Diagram}
  \label{fig:connections-diagram}
 \end{figure}
+
+\subsection{First Demo}
+En el primer demo para hacer la prise en main de AUTOSAR habia un ejemplo el cual debia funcionar con el programa CANoe. Se intento replicar el comportamiento del CANoe haciendole ingenieria inversa a los codigos. Se encontro el CanId necesario para que el ECU recibiera el frame CAN pero al parecer esto sigue un protocolo mas preciso por parte del programa del demo (CANoe). Decidimos dejarlo aqui porque eso no era productivo para el proyecto pero se aprendio muchisimo de autosar y de la forma en como esta estructurado su stack de comunicacion.
+
+%\begin{verbatim}
+%/* Appl/GenData/CanIf_Lcfg.c L279 */
+%CONST(CanIf_RxPduConfigType, CANIF_CONST) CanIf_RxPduConfig[8] = {  /* PRQA S 1514, 1533 */  /* MD_CSL_ObjectOnlyAccessedOnce */
+%    /*Index    RxPduCanId  RxPduMask  UpperPduId                                  RxIndicationFctListIdx   RxPduDlc   MsgType                      
+%  { /* 0 */    0x0400u  ,  0x643Fu  , CanNmConf_CanNmRxPdu_CAN_5f8bc0cc_Rx      , 1u               ,       8u         , CANIF_MSG_TYPE_CAN       },
+%  { /* 1 */    0x0614u  ,  0x07FFu  , CanTpConf_CanTpRxNPdu_CanTpRxNPdu_e872022a, 2u               ,       8u         , CANIF_MSG_TYPE_NO_FD_CAN },
+%  { /* 2 */    0x0610u  ,  0x07FFu  , CanTpConf_CanTpRxNPdu_CanTpRxNPdu_29945216, 2u               ,       8u         , CANIF_MSG_TYPE_NO_FD_CAN },
+%  { /* 3 */    0x0501u  ,  0x07FFu  , PduRConf_PduRSrcPdu_PduRSrcPdu_7a86d966   , 3u               ,      64u         , CANIF_MSG_TYPE_CAN       },
+%  { /* 4 */    0x0310u  ,  0x07FFu  , PduRConf_PduRSrcPdu_PduRSrcPdu_37e6280b   , 3u               ,       4u         , CANIF_MSG_TYPE_CAN       },
+%  { /* 5 */    0x0210u  ,  0x07FFu  , PduRConf_PduRSrcPdu_PduRSrcPdu_9e00b2d3   , 3u               ,       1u         , CANIF_MSG_TYPE_CAN       },
+%  { /* 6 */    0x0120u  ,  0x07FFu  , PduRConf_PduRSrcPdu_PduRSrcPdu_01c8980f   , 3u               ,       8u         , CANIF_MSG_TYPE_CAN       },
+%  { /* 7 */    0x0110u  ,  0x07FFu  , PduRConf_PduRSrcPdu_PduRSrcPdu_b1d1dd8a   , 3u               ,       6u         , CANIF_MSG_TYPE_CAN       } 
+%};
+%\end{verbatim}
+
+Primero habia un demo en el que habia un sistema de autosar bastante mas simple para el cual tuvimos que hacer varias cosas antes de arrancar, como hackearle el flexray y eso. Luego creamos un modelo en python que enviara datos por CAN. Despues de leer el stack de comunicacion de Autosar me di cuenta que habian varias cosillas que no tenian logica y al parecer el sw wstaba mal planteado. 
+
+\subsection{Gateway}
+
+Un gateway es un nodo de una red que se comunica con una red exterior, usualmente mas grande. Las ventajas de este gateway es que permite conectar varios protocolos de comunicacion como el Fr, CAN, LIN o ETH, para complementar ECU's que no necesariamente esten programadas para utilizarlos. 
+
+Este gateway en si mismo es una ECU programable con el sistema operativo MICROSAR Classic en el cual podemos preprocesar datos antes de comunicarnos con un protocolo exterior. 
+
+Ademas de esto, este gateway cuenta con un switch ethernet securise que soporta un ancho de banda y velocidades muy altas. Esto permite, por ejemplo, a un sistema de inteligencia artifial de conduccion acceder a una camara de 4k a traves de ethernet (por el ancho de banda grande que este tipo de media necesita) procesar datos y hacer una bien su trabajo, pero al tiempo puede pedir datos o enviar a otra ECU por LIN o CAN sin tener el protocolo fisico integrado. Tambien se pueden recibir muchos datos de internet como estado del trafico o datos de navegacion en tiempo real sin saturar protocolos de comunicacion como el LIN o Fr que tienen muchisimo menos ancho de banda.
+
+
+\subsection{TC37xEXT}
+Al comienzo del proyecto empezamos usando el microcontrolador AURIX TC37x \cite{aurix.tc37x} pero luego leyendo el datasheet del Gateway nos dimos cuenta que en realidad se estaba usando el TC37xEXT \cite{aurix.tc37e} el cual es una version con mas modulos disponibles, entre ellos un modulo CAN y un modulo GETH extras los cuales serian utiles en nuestro proyecto. Otras diferencias se encuentran en la tabla \ref{tab:tc37x_delta}.
+
+\input{anexes/tc37ex_delta.tex}
+
+Para modelisar los microcontroladores se utiliza python2, tomamos los modelos de cada modulo (memorias, mcmcan, cpus, etc) y los unimos a un bus con su respectiva start address y luego lo compilamos. Al final agregamos el nuevo microcontrolador al toolbox ya creado para poder tener todo bien clean.
+
+El siguiente paso fue testear el microcontrolador. Para programar en estos microcontroladores se usa BIFACES, un compilador especial para estas CPU's. Para testear las memorias se escribieron datos y se leyeron luego. Para el modulo CAN y GETH se testearon sus memorias RAM y se enviaron un par de mensajes hacia una ECU externa  y se verificaron. Todo salio bien y pudimos avanzar con el proyecto.
+
+\subsection{Switch Marvell 88Q5050}
+
+Para que el demo arranque nosotros el sw hace ciertas verificaciones de sus componentes como buses de datos funcionales y verifica el correcto comportamiento de ciertos componentes. En este contexto, el switch marvell 88Q5050 juega una papel muy importante en este proceso. El microcontrolador tiene una secuencia muy precisa para verificar el correcto comportamiento del switch, incluyendo leer y escribir registros por el BUS MDIO y descargar todos los registros del switch para luego usarlos. La secuencia de inicializacion esta detallada en el anexo \ref{anexe:switch-init}. Si se enceuntran errores en esta secuencia de inicializacion el sistema operativo no va a inicar los puertos de comunicacion ethernet y por tanto los demos del gateway no van a funcionar de la mejor manera.
+
+Para modelar el switch se utilizo systemC. Se modelo el Switch con base a la informacion fournie por parte del fabricante y se siguio con el proyecto.
+
+\subsection{Use Case 1}
+
+En la figura \ref{fig:connections-diagram} podemos ver que se tienen
+
+\begin{figure}[!htb]
+ \centering
+ \includegraphics[width=\textwidth]{img/GWConnectionsDiagram.png}
+ \caption{Gateway Connections Diagram}
+ \label{fig:connections-diagram}
+\end{figure}
+
+
+%Ya con el microcontrolador correcto podemos pasar al demo precargado en microsar tiene 2 USe cases en los que primero se envia algo por CAN y se le hace un forward por eth y viceversa.
+%Segun la documentacion del gateway, este gateway esta conectado de la forma mostrada en la figura \ref{fig:connections-diagram}. 
 
 \begin{figure}[!htb]
  \centering
