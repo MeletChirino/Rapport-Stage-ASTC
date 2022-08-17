@@ -1,0 +1,9 @@
+@startwire
+* TC37x [80x120] #lightgray
+--
+move(50,0)
+* hybrid_node_0 [90x120] #lightgray
+
+TC37x(100%, 20%) <=> hybrid_node_0 : LIN
+TC37x(100%, 60%) <=> hybrid_node_0 : CAN
+@endwire
