@@ -1,19 +1,24 @@
-\subsection{ECU's Externas}
+Avant la conception du projet il est nécessaire la prise en main du logiciel VLAB et l'utilisation des toolbox disponibles comme le toolbox CAN, Ethernet, LIN et aurix. J'ai d'abord instal\'e l'environement du travail avec les identifiants pour acceder a la reseaux interne de la soci\'et\'e. Deuxièmement, j'ai telecharge les dossiers du travail depuis les servers d'Australie. Apr\`es, j'ai compil\'e du logiciel simple pour tester le microcontr\^oleur (désormais appel\'e \textit{aurix}). Finalement j'ai mod\'elis\'e quelques composants génériques pour tester des autres fonctionalit\'es du VLAB comme les connections des bancs de test, l'envoie de donn\'ees a travers des différents réseaux, entre autres. Le développement de ce projet a \'et\'e divis\'e en 3 parties en fonction de l'évolution du même.
 
-Para poder probar cualquier cosa del gateway primero se necesitaban un par de componentes externos que interactuaran con este mismo, como se muestra en la figura \ref{fig:devices-diagram} del datasheet del gateway. Por lo tanto, se deben hacer este par de ECU's genericas para que interactuen con este gateway.
+\subsection{First Demo}
+
+Le premier exemple est fait pour tester le logiciel avec une configuration super simple. Il consiste a envoyer une trame CAN et le SWC la reenvoie vers le CANID source. Pour cet exemple une ECU generique a \'et\'e modélisé pour recevoir des trames CAN et LIN. Sur la figure \ref{fig:first-demo-diagram} on peut voir les connections. Malheureusement, cette premiere demo a \'et\'e con\c cue pour \^etre test\'e avec le logiciel CANoe dont nous ne posedons pas la license et SWC n'a pas march\'e comme attendu. Les possibles explications sont las suivantes :
+
+\begin{itemize}
+    \item Un protocole inconnu : Même si CANoe utilise le protocole CAN, il envoie peut \^etre d'autres trames d'identification avant le test.
+    \item Un SWC peu test\'e : Selon la documentation de ce test, ce SWC n'a pas \'et\'e teste au fond parce que son utilisation ne sera jamais implement\'e, c'est juste un test des logiciels.
+\end{itemize}
+
+Quand même, avec ce test j'ai acquis une connaissance basique du fonctionnement des logiciels AUTOSAR ce qui a rendu mon travaille future plus rapide et efficace. Un autre connaissance acquis dans ce partie c'était la partie de modélisation et le modèle de ECU déjà développe sera utilise plus tard.
+
+%En el primer demo para hacer la prise en main de AUTOSAR habia un ejemplo el cual debia funcionar con el programa CANoe. Se intento replicar el comportamiento del CANoe haciendole ingenieria inversa a los codigos. Se encontro el CanId necesario para que el ECU recibiera el frame CAN pero al parecer esto sigue un protocolo mas preciso por parte del programa del demo (CANoe). Decidimos dejarlo aqui porque eso no era productivo para el proyecto pero se aprendio muchisimo de autosar y de la forma en como esta estructurado su stack de comunicacion.
 
 \begin{figure}[!htb]
  \centering
- \includegraphics[width=\textwidth]{img/GWDemoConnections.PNG}
- \caption{Gateway Demo Devices}
- \label{fig:devices-diagram}
+ \includegraphics[]{img/first_demo_testbench.png}
+ \caption{Premier demo}
+ \label{fig:first-demo-diagram}
 \end{figure}
-
-Para modelar estas ECU's se utilizo pyton con su api de systemC la cual es permite tener un modelo de bajo nivel que puede interactuar con la ECU del gateway en bajo nivel y no al nivel por encima de la simulacion. A estas ECU's genericas se les doto de todos los nodos de comunicaciones soportados por nuestra companhia. Finalmente las ECU's solo enviaban unos cuantos frames CAN y ethernet y notificaban cuando lo recibian. El siguiente paso fue conectarlas a traves de un testbench con nuestra ECU y todo funciono bien.
-
-\subsection{First Demo}
-En el primer demo para hacer la prise en main de AUTOSAR habia un ejemplo el cual debia funcionar con el programa CANoe. Se intento replicar el comportamiento del CANoe haciendole ingenieria inversa a los codigos. Se encontro el CanId necesario para que el ECU recibiera el frame CAN pero al parecer esto sigue un protocolo mas preciso por parte del programa del demo (CANoe). Decidimos dejarlo aqui porque eso no era productivo para el proyecto pero se aprendio muchisimo de autosar y de la forma en como esta estructurado su stack de comunicacion.
-
 %\begin{verbatim}
 %/* Appl/GenData/CanIf_Lcfg.c L279 */
 %CONST(CanIf_RxPduConfigType, CANIF_CONST) CanIf_RxPduConfig[8] = {  /* PRQA S 1514, 1533 */  /* MD_CSL_ObjectOnlyAccessedOnce */
@@ -29,9 +34,14 @@ En el primer demo para hacer la prise en main de AUTOSAR habia un ejemplo el cua
 %};
 %\end{verbatim}
 
-Primero habia un demo en el que habia un sistema de autosar bastante mas simple para el cual tuvimos que hacer varias cosas antes de arrancar, como hackearle el flexray y eso. Luego creamos un modelo en python que enviara datos por CAN. Despues de leer el stack de comunicacion de Autosar me di cuenta que habian varias cosillas que no tenian logica y al parecer el sw wstaba mal planteado. 
-
 \subsection{Gateway}
+
+\begin{figure}[!htb]
+ \centering
+ \includegraphics[width=\textwidth]{img/GWDemoConnections.PNG}
+ \caption{Gateway Demo Devices}
+ \label{fig:devices-diagram}
+\end{figure}
 
 Un gateway es un nodo de una red que se comunica con una red exterior, usualmente mas grande. Las ventajas de este gateway es que permite conectar varios protocolos de comunicacion como el Fr, CAN, LIN o ETH, para complementar ECU's que no necesariamente esten programadas para utilizarlos. 
 
@@ -86,4 +96,5 @@ Luego muestras que envias un dato desde CAN con el id que es y que no funcionaba
 
 \subsection{Use Case 2}
 
-Ni idea que voy a poner aqui. No estoy seguro de legar tan lejos.
+El segundo es uno en el que se envian datos por geth y se reciben por CAN.
+No se llego a este caso porque se paso mucho tiempo modelando el switch y analizando el codigo AUTOSAR y modelando el tc37xEXT.
