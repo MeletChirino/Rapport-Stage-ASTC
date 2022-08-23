@@ -4,7 +4,7 @@ Avant la conception du projet il est nécessaire la prise en main du logiciel VL
 
 \begin{itemize}
     \item - Premier demo technique qui sers a faire la prise en main d'AUTOSAR, VLAB et l'environnement en général.
-    \item - Developpement de l'aurix \textit{TC37xEXT}, pas support\'e jusqu'\`a moment du démarrage du stage.
+    \item - Developpement de l'aurix \textit{TC37xEXT}\cite{aurix.tc37e}, pas support\'e jusqu'\`a moment du démarrage du stage.
     \item - Virtualisation du Gateway
 \end{itemize}
 
@@ -12,16 +12,16 @@ Avant la conception du projet il est nécessaire la prise en main du logiciel VL
 
 Le premier exemple est fait pour tester le logiciel avec une configuration super simple. Il consiste a envoyer une trame CAN et le SWC la reenvoie vers le CANID source. Pour cet exemple une ECU générique a \'et\'e modélisé pour recevoir des trames CAN et LIN. Sur la figure \ref{fig:first-demo-diagram} se montre un diagrame de block des communications. 
 
-Le structure de communications d'AUTOSAR de la figure \ref{fig:autosar-com-stack} nous montre que le chemin parcouru par les donn\'ees arrivant \'a l'aurix. Le chemin des donn\'ees de cette premier demo est le suivant \textit{Microcontroler}$ ->$ \textit{CAN\_Driver} $->$ \textit{CAN\_IF}\footnote{IF dans la notation AUTOSAR veut dire Interface} $->$ \textit{PDUR}\footnote{PDU est le nom des donn\'ees dans cette couche d'abstraction selon le mod\`ele OSI.}\footnote{PUDR est le router des PDUs. C'est ce module qui prends le décision o\`u envoyer les donn\'ees re\c cues}. C'est ici dans le PDUR qu'on trouve un probl\`eme parce que la trame re\c cue n'est pas activ\'e au début du programme.
+Le structure de communications d'AUTOSAR de la figure \ref{fig:autosar-com-stack} nous montre que le chemin parcouru par les donn\'ees arrivant \'a l'aurix. Le chemin des donn\'ees de cette premier demo est le suivant \textit{Microcontroler}$ ->$ \textit{CAN\_Driver} $->$ \textit{CAN\_IF}\footnote{IF dans la notation AUTOSAR veut dire Interface} $->$ \textit{PDUR}\footnote{PDU est le nom des donn\'ees dans cette couche d'abstraction selon le mod\`ele OSI.}\footnote{PUDR\cite{pdu_r_man} est le router des PDUs. C'est ce module qui prends le décision o\`u envoyer les donn\'ees re\c cues}. C'est ici dans le PDUR qu'on trouve un probl\`eme parce que la trame re\c cue n'est pas activ\'e au début du programme.
 
 \begin{figure}[!htb]
  \centering
  \includegraphics[width=\textwidth]{img/autosar_com_stack.png}
- \caption{Autosar Communication Stack}
+ \caption{Autosar Communication Stack\cite{sock_adp_man}}
  \label{fig:autosar-com-stack}
 \end{figure}
 
-Cette première demo a \'et\'e con\c cue pour \^etre test\'e avec le logiciel \textbf{CANoe} dont nous ne possédions pas la licence et le SWC n'a pas march\'e comme attendu. Les possibles explications sont las suivantes :
+Cette première demo a \'et\'e con\c cue pour \^etre test\'e avec le logiciel \textbf{CANoe}\cite{canoe} dont nous ne possédions pas la licence et le SWC n'a pas march\'e comme attendu. Les possibles explications sont las suivantes :
 
 \begin{itemize}
     \item - Un protocole inconnu : Même si CANoe utilise le protocole CAN, il envoie peut \^etre d'autres trames d'identification avant le test.
@@ -54,7 +54,7 @@ Les connections internes du gateway sont montr\'es dans la figure \ref{fig:devic
 \begin{figure}[!htb]
  \centering
  \includegraphics[width=\textwidth]{img/GWDemoConnections.PNG}
- \caption{Gateway Demo Devices}
+ \caption{Gateway Demo Devices \cite{gateway-pb}}
  \label{fig:devices-diagram}
 \end{figure}
 
@@ -74,12 +74,12 @@ Les connections internes du gateway sont montr\'es dans la figure \ref{fig:devic
 
 \subsubsection{Switch Marvell 88Q5050}
 
-Avant de demarrer les SWC le logiciel de la gateway verifie si toutes les composants et buses de donn\'ees sont presents. Un des composants present dans la carte est le Switch ethernet Marvell 88Q5050. C'est un switch securis\'e optimis\'e pour \^etre utilis\'e dans l'industrie automobile. Il est connect\'e aux ECUs externes via ports Ethernet et avec l'aurix a travers d'un port ethernet et un bus MDIO. Ce bus MDIO est utilis\'e pour accéder aux registres du switch a travers de l'aurix. De cette façon nous pouvons gérer le fonctionnement interne du switch avec l'aurix.
+Avant de demarrer les SWC le logiciel de la gateway verifie si toutes les composants et buses de donn\'ees sont presents. Un des composants present dans la carte est le Switch ethernet Marvell 88Q5050\cite{sw88Q5050}. C'est un switch securis\'e optimis\'e pour \^etre utilis\'e dans l'industrie automobile. Il est connect\'e aux ECUs externes via ports Ethernet et avec l'aurix a travers d'un port ethernet et un bus MDIO\cite{mdio-background}. Ce bus MDIO est utilis\'e pour accéder aux registres du switch a travers de l'aurix. De cette façon nous pouvons gérer le fonctionnement interne du switch avec l'aurix.
 
 Ce modele a \'et\'e developp\'e en C++ et SystemC \`a l'aide du datasheet du fournisseur. Pour cette modèle j'ai suivi la procédure interne de modélisation des composants en ajoutant la quantit\'e  de buses, registres, ports et fonctionalit\'es de chaque élément. 
 
 \subsubsection{Transceivers Marvell}
 
-Ces transceivers connectent la couche PHY avec le switch. Avant le démarrage du logiciel le systeme de exploitation verifie son statut pour initialiser les ports.
+Ces transceivers\cite{88Q2112}\cite{88Q1010} connectent la couche PHY avec le switch. Avant le démarrage du logiciel le systeme de exploitation verifie son statut pour initialiser les ports.
 
-Au moment de la rédaction de ce rapport, nous ne possédions pas les datasheet de ces transceivers.
+Au moment de la rédaction de ce rapport, nous ne possédions pas les datasheet de ces transceivers. Dans la modèle du switch 88Q5050 est integr\'e les commandes necessarires pour "initialiser les transceivers".
