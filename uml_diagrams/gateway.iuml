@@ -1,0 +1,49 @@
+@startuml
+
+title "Network Exemple"
+package "Local Network"{
+    component "Device 1" as dev1
+    component "Device 2" as dev2
+    component "Device 3" as dev3
+    component "Device 4" as dev4
+    component "Gateway" as gate
+}
+dev1 <--> gate
+dev2 <--> gate
+dev3 <--> gate
+dev4 <--> gate
+dev1 --> dev3
+dev2 --> dev4 
+dev4 --> dev3
+
+cloud "Internet" {
+    database "Google Server" as google
+    database "Amazon" as amazon
+    component "UT3 Server" as ut3
+}
+
+gate <--> google
+gate <--> amazon
+google <--> amazon
+ut3 <--> google
+ut3 <--> amazon
+ut3 <--> gate
+
+package "External network"{
+    component "Device 1" as dev1_ext
+    component "Device 2" as dev2_ext
+    component "Device 3" as dev3_ext
+    component "Device 4" as dev4_ext
+    component "Gateway" as gate_ext
+}
+
+gate <--> gate_ext
+gate_ext <--> amazon
+gate_ext <--> google
+
+dev1_ext <-up-> gate_ext
+dev2_ext <-up-> gate_ext
+dev3_ext <-up-> gate_ext
+dev4_ext <-up-> gate_ext
+
+@enduml
