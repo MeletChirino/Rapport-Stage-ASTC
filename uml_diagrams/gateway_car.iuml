@@ -1,0 +1,56 @@
+@startuml
+!theme hacker
+title "Car Network Exemple"
+
+package "Car"{
+    component "Gateway" as gate
+
+    package "CAN Network"{
+        component "ECU 1" as can1
+        component "ECU 2" as can2
+        component "ECU 3" as can3
+        component "ECU 4" as can4
+        interface "Can BUS" as can_bus
+    }
+    can1 <-right-> can_bus
+    can2 <-up-> can_bus
+    can3 <-up-> can_bus
+    can4 <--> can_bus
+
+    package "FlexRay Network"{
+        component "ECU 1" as fr1
+        component "ECU 2" as fr2
+        component "ECU 3" as fr3
+        component "ECU 4" as fr4
+        interface "FlexRay Bus" as fr_bus
+    }
+
+    fr1 <-right-> fr_bus
+    fr2 <-up-> fr_bus
+    fr3 <-up-> fr_bus
+    fr4 <--> fr_bus
+
+    package "Ethernet Network"{
+        component "ECU 1" as eth1
+        component "ECU 2" as eth2
+    }
+
+    eth1 <--> gate
+    eth2 <--> gate
+    can_bus <--> gate
+    fr_bus <--> gate
+}
+
+cloud "Internet" {
+    database "Google Server" as google
+    database "Amazon" as amazon
+    component "UT3 Server" as ut3
+}
+
+gate <--> google
+gate <--> amazon
+gate <--> ut3
+google <-right-> amazon
+amazon <-->ut3
+
+@enduml

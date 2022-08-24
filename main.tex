@@ -59,16 +59,18 @@
 \begin{minipage}{0.4\textwidth}
 \begin{flushleft} \large
 \markboth{Pojet en \LaTeX}
-\emph{Auteurs:}\\
-\textsc{CHIRINO} Melet \\ % Your name
+\emph{Auteur:}\\
+\textsc{CHIRINO CAICEDO}\\ % Your name
+Melet David
 %\textsc{RIBEIRO} Bruno % Your name
 \end{flushleft}
 \end{minipage}
 ~
 \begin{minipage}{0.5\textwidth}
 \begin{flushright} \large
-\emph{Tuteur:} \\
-\textsc{BROUEILH} Nicolas  % Supervisor's Name
+\emph{Encadrant industriel:} \\
+\textsc{BROUEILH} Nicolas \\ % Supervisor's Name
+\emph{Encadrant universitaire:} \\
 \textsc{RIVI\`ERE} Nicolas  % Supervisor's Name
 \end{flushright}
 \end{minipage}\\[2cm]
@@ -101,13 +103,11 @@
 \newpage
 
 %-------------------------- * Introduccion * --------------------------------
-
-\section{Introduction}
+\newpage
 \input{introduccion}
 
 %-------------------------- * Descripcion * --------------------------------
-
-\section{Cadre du projet et probl\'ematique}
+\newpage
 \input{problematique}
 %
 %-------------------------- * Objetivos * --------------------------------
@@ -116,19 +116,17 @@
 %\input{objectives}
 
 %-------------------------- * Estado del Arte * --------------------------------
-\section{Etat de l'Art}
-\input{etar_dart}
+%\section{Etat de l'Art}
+%\input{etar_dart}
 
 
 %-------------------------- * Conception/Desarrollo * --------------------------------
-\section{Conception}
-\input{conception}
+\newpage
+\input{conception.tex}
 
 %-------------------------- * Seccion de resultados * --------------------------------
-
-\section{Resultats}
+\newpage
 \input{resultats}
-
 
 %-------------------
 
@@ -142,14 +140,15 @@
 %Para citar la bibliografia haces \cite{Photovoltaic}
 %Para referenciar las imagenes haces lo sgte \ref{fig:schema}
 
-\section{Conclusion}
-
 \newpage
-\section{Anexes}
+\input{conclusion}
 
-\subsection{Initialisation du switch}
-\input{anexes/switch-init}
-\label{anexe:switch-init}
+%\newpage
+%\section{Anexes}
+
+%\subsection{Initialisation du switch}
+%\input{anexes/switch-init}
+%\label{anexe:switch-init}
 
 
 % ---- TC37x Delta ----

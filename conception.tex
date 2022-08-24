@@ -1,75 +1,61 @@
-\subsection{ECU's Externas}
+\section{Conception}
 
-Para poder probar cualquier cosa del gateway primero se necesitaban un par de componentes externos que interactuaran con este mismo, como se muestra en la figura \ref{fig:devices-diagram} del datasheet del gateway. Por lo tanto, se deben hacer este par de ECU's genericas para que interactuen con este gateway.
+Avant la conception du projet il est nécessaire la prise en main du logiciel VLAB et l'utilisation des toolbox disponibles comme le toolbox\footnote{Un toolbox de VLAB est un compilation des librairies qui ajoutent des modeles de simulation pour VLAB, par exemple, le toolbox Ethernet nous donne des noeuds Ethernet, ports et la class de trame Ethernet pour l'envoie d'information.} CAN, Ethernet, LIN et aurix. J'ai d'abord instal\'e l'environement du travail avec les identifiants pour acceder \`a la reseaux interne de la soci\'et\'e. Deuxièmement, j'ai telecharge les dossiers du travail depuis les servers d'Australie. Apr\`es, j'ai compil\'e du logiciel simple pour tester le microcontr\^oleur (désormais appel\'e \textit{aurix}). Finalement, j'ai mod\'elis\'e quelques composants génériques pour tester des autres fonctionalit\'es du VLAB comme les connections des bancs de test, l'envoie de donn\'ees a travers des différents réseaux et la réception et utilisation de donn\'ees. Le développement de ce projet a \'et\'e divis\'e en 3 parties en fonction de l'évolution du même.
+
+\begin{itemize}
+    \item - Premier demo technique qui sers a faire la prise en main d'AUTOSAR, VLAB et l'environnement en général.
+    \item - Developpement de l'aurix \textit{TC37xEXT}\cite{aurix.tc37e}, pas support\'e jusqu'\`a moment du démarrage du stage.
+    \item - Virtualisation du Gateway
+\end{itemize}
+
+\subsection{Premier demo technique}
+
+Le premier exemple est fait pour tester le logiciel avec une configuration super simple. Il consiste a envoyer une trame CAN et le SWC la reenvoie vers le CANID source. Pour cet exemple une ECU générique a \'et\'e modélisé pour recevoir des trames CAN et LIN. Sur la figure \ref{fig:first-demo-diagram} se montre un diagrame de block des communications. 
+
+Le structure de communications d'AUTOSAR de la figure \ref{fig:autosar-com-stack} nous montre que le chemin parcouru par les donn\'ees arrivant \'a l'aurix. Le chemin des donn\'ees de cette premier demo est le suivant \textit{Microcontroler}$ ->$ \textit{CAN\_Driver} $->$ \textit{CAN\_IF}\footnote{IF dans la notation AUTOSAR veut dire Interface} $->$ \textit{PDUR}\footnote{PDU est le nom des donn\'ees dans cette couche d'abstraction selon le mod\`ele OSI.}\footnote{PUDR\cite{pdu_r_man} est le router des PDUs. C'est ce module qui prends le décision o\`u envoyer les donn\'ees re\c cues}. C'est ici dans le PDUR qu'on trouve un probl\`eme parce que la trame re\c cue n'est pas activ\'e au début du programme.
+
+\begin{figure}[!htb]
+ \centering
+ \includegraphics[width=\textwidth]{img/autosar_com_stack.png}
+ \caption{Autosar Communication Stack\cite{sock_adp_man}}
+ \label{fig:autosar-com-stack}
+\end{figure}
+
+Cette première demo a \'et\'e con\c cue pour \^etre test\'e avec le logiciel \textbf{CANoe}\cite{canoe} dont nous ne possédions pas la licence et le SWC n'a pas march\'e comme attendu. Les possibles explications sont las suivantes :
+
+\begin{itemize}
+    \item - Un protocole inconnu : Même si CANoe utilise le protocole CAN, il envoie peut \^etre d'autres trames d'identification avant le test.
+    \item - Un SWC peu test\'e : Selon la documentation de ce test, ce SWC n'a pas \'et\'e teste au fond parce que son utilisation ne sera jamais implement\'e, c'est juste un test des logiciels.
+\end{itemize}
+
+Quand même, avec ce test j'ai acquis une connaissance basique du fonctionnement des logiciels AUTOSAR ce qui a rendu mon travaille future plus rapide et efficace. Un autre connaissance acquis dans ce partie c'était la partie de modélisation et le modèle de ECU déjà développe sera utilise plus tard.
+
+\begin{figure}[!htb]
+ \centering
+ \includegraphics[]{img/first_demo_testbench.png}
+ \caption{Premier demo}
+ \label{fig:first-demo-diagram}
+\end{figure}
+
+\subsection{TC37xEXT}
+
+Cette version de l'aurix ajoutait quelques modules de plus, les plus concernant pour ce projet c'etaient une interface CAN (MCMCAN\footnote{C'est le nom de l'interface CAN dans la famille de microcontroleurs \textit{aurix}}) et Gigabit Ethernet (GETH) de plus. Les autres differences seront trouv\'ees dans la table \ref{tab:tc37x_delta}. Le modèle du \textit{TC37x}\cite{aurix.tc37x} a \'et\'e pris comme la base et les interfaces et modules ont \'et\'e ajout\'es selon les adresses de base sur les buses correspondants.
+
+\input{anexes/tc37ex_delta.tex}
+
+Pour ce type de modélisation les information sont fournies dans un fichier python qui fait l'assemblage de toutes les modèles de chaque module ou interface. Pour finaliser, il faut compiler et faire le test de chaque module ajout\'e.
+
+Les testes doivent se faire en logiciel, il faut compiler un fichier \textit{.elf} et le monter sur la plateforme virtuelle cr\'e\'ee et lancer un script de test qui vérifie si tout se passe bien. Dans le cas precis du \textit{TC37xEXT},  nous avons test\'e l'accès aux registres de mémoire ajout\'e et des interfaces MCMCAN et GETH.
+
+\subsection{Gateway Demo}
+
+Les connections internes du gateway sont montr\'es dans la figure \ref{fig:devices-diagram}. \`A partir de cette configuration le testbench assembl\'e se montre dans la figure \ref{fig:connections-diagram}. %Dans ce point nous nous sommes rendu compte que le aurix utilis\'e n'etait pas celui de la application, ce gateway utilis\'e la version extended \cite{aurix.tc37e} de cet aurix donc j'ai du le developper.
 
 \begin{figure}[!htb]
  \centering
  \includegraphics[width=\textwidth]{img/GWDemoConnections.PNG}
- \caption{Gateway Demo Devices}
+ \caption{Gateway Demo Devices \cite{gateway-pb}}
  \label{fig:devices-diagram}
-\end{figure}
-
-Para modelar estas ECU's se utilizo pyton con su api de systemC la cual es permite tener un modelo de bajo nivel que puede interactuar con la ECU del gateway en bajo nivel y no al nivel por encima de la simulacion. A estas ECU's genericas se les doto de todos los nodos de comunicaciones soportados por nuestra companhia. Finalmente las ECU's solo enviaban unos cuantos frames CAN y ethernet y notificaban cuando lo recibian. El siguiente paso fue conectarlas a traves de un testbench con nuestra ECU y todo funciono bien.
-
-\subsection{First Demo}
-En el primer demo para hacer la prise en main de AUTOSAR habia un ejemplo el cual debia funcionar con el programa CANoe. Se intento replicar el comportamiento del CANoe haciendole ingenieria inversa a los codigos. Se encontro el CanId necesario para que el ECU recibiera el frame CAN pero al parecer esto sigue un protocolo mas preciso por parte del programa del demo (CANoe). Decidimos dejarlo aqui porque eso no era productivo para el proyecto pero se aprendio muchisimo de autosar y de la forma en como esta estructurado su stack de comunicacion.
-
-%\begin{verbatim}
-%/* Appl/GenData/CanIf_Lcfg.c L279 */
-%CONST(CanIf_RxPduConfigType, CANIF_CONST) CanIf_RxPduConfig[8] = {  /* PRQA S 1514, 1533 */  /* MD_CSL_ObjectOnlyAccessedOnce */
-%    /*Index    RxPduCanId  RxPduMask  UpperPduId                                  RxIndicationFctListIdx   RxPduDlc   MsgType                      
-%  { /* 0 */    0x0400u  ,  0x643Fu  , CanNmConf_CanNmRxPdu_CAN_5f8bc0cc_Rx      , 1u               ,       8u         , CANIF_MSG_TYPE_CAN       },
-%  { /* 1 */    0x0614u  ,  0x07FFu  , CanTpConf_CanTpRxNPdu_CanTpRxNPdu_e872022a, 2u               ,       8u         , CANIF_MSG_TYPE_NO_FD_CAN },
-%  { /* 2 */    0x0610u  ,  0x07FFu  , CanTpConf_CanTpRxNPdu_CanTpRxNPdu_29945216, 2u               ,       8u         , CANIF_MSG_TYPE_NO_FD_CAN },
-%  { /* 3 */    0x0501u  ,  0x07FFu  , PduRConf_PduRSrcPdu_PduRSrcPdu_7a86d966   , 3u               ,      64u         , CANIF_MSG_TYPE_CAN       },
-%  { /* 4 */    0x0310u  ,  0x07FFu  , PduRConf_PduRSrcPdu_PduRSrcPdu_37e6280b   , 3u               ,       4u         , CANIF_MSG_TYPE_CAN       },
-%  { /* 5 */    0x0210u  ,  0x07FFu  , PduRConf_PduRSrcPdu_PduRSrcPdu_9e00b2d3   , 3u               ,       1u         , CANIF_MSG_TYPE_CAN       },
-%  { /* 6 */    0x0120u  ,  0x07FFu  , PduRConf_PduRSrcPdu_PduRSrcPdu_01c8980f   , 3u               ,       8u         , CANIF_MSG_TYPE_CAN       },
-%  { /* 7 */    0x0110u  ,  0x07FFu  , PduRConf_PduRSrcPdu_PduRSrcPdu_b1d1dd8a   , 3u               ,       6u         , CANIF_MSG_TYPE_CAN       } 
-%};
-%\end{verbatim}
-
-Primero habia un demo en el que habia un sistema de autosar bastante mas simple para el cual tuvimos que hacer varias cosas antes de arrancar, como hackearle el flexray y eso. Luego creamos un modelo en python que enviara datos por CAN. Despues de leer el stack de comunicacion de Autosar me di cuenta que habian varias cosillas que no tenian logica y al parecer el sw wstaba mal planteado. 
-
-\subsection{Gateway}
-
-Un gateway es un nodo de una red que se comunica con una red exterior, usualmente mas grande. Las ventajas de este gateway es que permite conectar varios protocolos de comunicacion como el Fr, CAN, LIN o ETH, para complementar ECU's que no necesariamente esten programadas para utilizarlos. 
-
-Este gateway en si mismo es una ECU programable con el sistema operativo MICROSAR Classic en el cual podemos preprocesar datos antes de comunicarnos con un protocolo exterior. 
-
-Ademas de esto, este gateway cuenta con un switch ethernet securise que soporta un ancho de banda y velocidades muy altas. Esto permite, por ejemplo, a un sistema de inteligencia artifial de conduccion acceder a una camara de 4k a traves de ethernet (por el ancho de banda grande que este tipo de media necesita) procesar datos y hacer una bien su trabajo, pero al tiempo puede pedir datos o enviar a otra ECU por LIN o CAN sin tener el protocolo fisico integrado. Tambien se pueden recibir muchos datos de internet como estado del trafico o datos de navegacion en tiempo real sin saturar protocolos de comunicacion como el LIN o Fr que tienen muchisimo menos ancho de banda.
-
-
-\subsection{TC37xEXT}
-Al comienzo del proyecto empezamos usando el microcontrolador AURIX TC37x \cite{aurix.tc37x} pero luego leyendo el datasheet del Gateway nos dimos cuenta que en realidad se estaba usando el TC37xEXT \cite{aurix.tc37e} el cual es una version con mas modulos disponibles, entre ellos un modulo CAN y un modulo GETH extras los cuales serian utiles en nuestro proyecto. Otras diferencias se encuentran en la tabla \ref{tab:tc37x_delta}.
-
-\input{anexes/tc37ex_delta.tex}
-
-Para modelisar los microcontroladores se utiliza python2, tomamos los modelos de cada modulo (memorias, mcmcan, cpus, etc) y los unimos a un bus con su respectiva start address y luego lo compilamos. Al final agregamos el nuevo microcontrolador al toolbox ya creado para poder tener todo bien clean.
-
-El siguiente paso fue testear el microcontrolador. Para programar en estos microcontroladores se usa BIFACES, un compilador especial para estas CPU's. Para testear las memorias se escribieron datos y se leyeron luego. Para el modulo CAN y GETH se testearon sus memorias RAM y se enviaron un par de mensajes hacia una ECU externa  y se verificaron. Todo salio bien y pudimos avanzar con el proyecto.
-
-\subsection{Switch Marvell 88Q5050}
-
-Para que el demo arranque nosotros el sw hace ciertas verificaciones de sus componentes como buses de datos funcionales y verifica el correcto comportamiento de ciertos componentes. En este contexto, el switch marvell 88Q5050 juega una papel muy importante en este proceso. El microcontrolador tiene una secuencia muy precisa para verificar el correcto comportamiento del switch, incluyendo leer y escribir registros por el BUS MDIO y descargar todos los registros del switch para luego usarlos. La secuencia de inicializacion esta detallada en el anexo \ref{anexe:switch-init}. Si se enceuntran errores en esta secuencia de inicializacion el sistema operativo no va a inicar los puertos de comunicacion ethernet y por tanto los demos del gateway no van a funcionar de la mejor manera.
-
-
-Un dato interesante de este switch es que ademas de funcionar como switch ethernet, permite un modo de funcionamiento Distributed Switch Architecture el cual permite que una o varias cpus externas le envien comandos a la cpu del switch para modificar registros dentro del switch o para procesar datos antes de enviarlos o cualquier otra cosa. Este modo de comunicacion da muchisima flexibilidad porque con nuestra ECU podemos controlar el funcionamiento a bajo nivel del switch evitando que sea un componente pasivo y dandole el control al desarrollador de todo lo que quiera hacer con el switch.
-
-
-Otro problema que nos encontramos realizando esta parte esque el modelo de comunicaciones ethernet del toolbox aurix no permitia protocolos SNAP y el protocolo mencionado arriba es un protocolo SNAP asi que toco agregar el soporte para protocolos SNAP en el modelo propio de aurix. Se testeo luego el comportamiento inical y todo estaba funcionando bien.
-
-Para modelar el switch se utilizo systemC. Se modelo el Switch con base a la informacion fournie por parte del fabricante y se siguio con el proyecto.
-
-\subsection{Use Case 1}
-
-En la figura \ref{fig:block diagram} podemos ver que modulos se comunican con que dispositivo. Para el Use case 1 probamos enviando un mensaje CAN desde la ECU2 con el Id encontrado en el sw de autosar y este funciona ya que envia el mensaje a traves de todo el stack de comunicaciones de autosar pero lastimosamente cuando llega al socket adapter se muere porque los puertos no han sido activados, mala configuracion del switch.
-
-\begin{figure}[!htb]
- \centering
- \includegraphics[width=\textwidth]{img/gateway_block_diagram.png}
- \caption{Gateway Block diagram}
- \label{fig:block diagram}
 \end{figure}
 
 \begin{figure}[!htb]
@@ -79,11 +65,21 @@ En la figura \ref{fig:block diagram} podemos ver que modulos se comunican con qu
  \label{fig:connections-diagram}
 \end{figure}
 
-%Ya con el microcontrolador correcto podemos pasar al demo precargado en microsar tiene 2 USe cases en los que primero se envia algo por CAN y se le hace un forward por eth y viceversa.
-%Segun la documentacion del gateway, este gateway esta conectado de la forma mostrada en la figura \ref{fig:connections-diagram}. 
+\begin{figure}[!htb]
+ \centering
+ \includegraphics[width=\textwidth]{img/gateway_block_diagram.png}
+ \caption{Gateway Block diagram}
+ \label{fig:block diagram}
+\end{figure}
 
-Luego muestras que envias un dato desde CAN con el id que es y que no funcionaba porque patata
+\subsubsection{Switch Marvell 88Q5050}
 
-\subsection{Use Case 2}
+Avant de demarrer les SWC le logiciel de la gateway verifie si toutes les composants et buses de donn\'ees sont presents. Un des composants present dans la carte est le Switch ethernet Marvell 88Q5050\cite{sw88Q5050}. C'est un switch securis\'e optimis\'e pour \^etre utilis\'e dans l'industrie automobile. Il est connect\'e aux ECUs externes via ports Ethernet et avec l'aurix a travers d'un port ethernet et un bus MDIO\cite{mdio-background}. Ce bus MDIO est utilis\'e pour accéder aux registres du switch a travers de l'aurix. De cette façon nous pouvons gérer le fonctionnement interne du switch avec l'aurix.
 
-Ni idea que voy a poner aqui. No estoy seguro de legar tan lejos.
+Ce modele a \'et\'e developp\'e en C++ et SystemC \`a l'aide du datasheet du fournisseur. Pour cette modèle j'ai suivi la procédure interne de modélisation des composants en ajoutant la quantit\'e  de buses, registres, ports et fonctionalit\'es de chaque élément. 
+
+\subsubsection{Transceivers Marvell}
+
+Ces transceivers\cite{88Q2112}\cite{88Q1010} connectent la couche PHY avec le switch. Avant le démarrage du logiciel le systeme de exploitation verifie son statut pour initialiser les ports.
+
+Au moment de la rédaction de ce rapport, nous ne possédions pas les datasheet de ces transceivers. Dans la modèle du switch 88Q5050 est integr\'e les commandes necessarires pour "initialiser les transceivers".
