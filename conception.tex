@@ -1,6 +1,6 @@
 \section{Conception}
 
-Avant la conception du projet il est nécessaire la prise en main du logiciel VLAB et l'utilisation des toolbox disponibles comme le toolbox\footnote{Un toolbox de VLAB est un compilation des librairies qui ajoutent des modeles de simulation pour VLAB, par exemple, le toolbox Ethernet nous donne des noeuds Ethernet, ports et la class de trame Ethernet pour l'envoie d'information.} CAN, Ethernet, LIN et aurix. J'ai d'abord instal\'e l'environement du travail avec les identifiants pour acceder \`a la reseaux interne de la soci\'et\'e. Deuxièmement, j'ai telecharge les dossiers du travail depuis les servers d'Australie. Apr\`es, j'ai compil\'e du logiciel simple pour tester le microcontr\^oleur (désormais appel\'e \textit{aurix}). Finalement, j'ai mod\'elis\'e quelques composants génériques pour tester des autres fonctionalit\'es du VLAB comme les connections des bancs de test, l'envoie de donn\'ees a travers des différents réseaux et la réception et utilisation de donn\'ees. Le développement de ce projet a \'et\'e divis\'e en 3 parties en fonction de l'évolution du même.
+Avant la conception du projet il est nécessaire la prise en main du logiciel VLAB et l'utilisation des toolbox disponibles comme le toolbox CAN, Ethernet, LIN et aurix. J'ai d'abord instal\'e l'environement du travail avec les identifiants pour acceder \`a la reseaux interne de la soci\'et\'e. Deuxièmement, j'ai telecharge les dossiers du travail depuis les servers d'Australie. Apr\`es, j'ai compil\'e du logiciel simple pour tester le microcontr\^oleur (désormais appel\'e \textit{aurix}). Finalement, j'ai mod\'elis\'e quelques composants génériques pour tester des autres fonctionalit\'es du VLAB comme les connections des bancs de test, l'envoie de donn\'ees a travers des différents réseaux et la réception et utilisation de donn\'ees. Le développement de ce projet a \'et\'e divis\'e en 3 parties en fonction de l'évolution du même.
 
 \begin{itemize}
     \item - Premier demo technique qui sers a faire la prise en main d'AUTOSAR, VLAB et l'environnement en général.
@@ -12,14 +12,14 @@ Avant la conception du projet il est nécessaire la prise en main du logiciel VL
 
 Le premier exemple est fait pour tester le logiciel avec une configuration super simple. Il consiste a envoyer une trame CAN et le SWC la reenvoie vers le CANID source. Pour cet exemple une ECU générique a \'et\'e modélisé pour recevoir des trames CAN et LIN. Sur la figure \ref{fig:first-demo-diagram} se montre un diagrame de block des communications. 
 
-Le structure de communications d'AUTOSAR de la figure \ref{fig:autosar-com-stack} nous montre que le chemin parcouru par les donn\'ees arrivant \'a l'aurix. Le chemin des donn\'ees de cette premier demo est le suivant \textit{Microcontroler}$ ->$ \textit{CAN\_Driver} $->$ \textit{CAN\_IF}\footnote{IF dans la notation AUTOSAR veut dire Interface} $->$ \textit{PDUR}\footnote{PDU est le nom des donn\'ees dans cette couche d'abstraction selon le mod\`ele OSI.}\footnote{PUDR\cite{pdu_r_man} est le router des PDUs. C'est ce module qui prends le décision o\`u envoyer les donn\'ees re\c cues}. C'est ici dans le PDUR qu'on trouve un probl\`eme parce que la trame re\c cue n'est pas activ\'e au début du programme.
-
 \begin{figure}[!htb]
  \centering
- \includegraphics[width=\textwidth]{img/autosar_com_stack.png}
- \caption{Autosar Communication Stack\cite{sock_adp_man}}
- \label{fig:autosar-com-stack}
+ \includegraphics[]{img/first_demo_testbench.png}
+ \caption{Premier demo}
+ \label{fig:first-demo-diagram}
 \end{figure}
+
+Le structure de communications d'AUTOSAR de la figure \ref{fig:autosar-com-stack} nous montre que le chemin parcouru par les donn\'ees arrivant \'a l'aurix. Le chemin des donn\'ees de cette premier demo est le suivant \textit{Microcontroler}$ ->$ \textit{CAN\_Driver}\cite{can_drv_man} $->$ \textit{CAN\_IF}\footnote{IF dans la notation AUTOSAR veut dire Interface}\cite{can_if_man} $->$ \textit{PDU-R}\footnote{PDU est le nom des donn\'ees dans cette couche d'abstraction selon le mod\`ele OSI\cite{osi-model}.}\footnote{PUD-R\cite{pdu_r_man} est le router des PDUs. C'est ce module qui prends le décision o\`u envoyer les donn\'ees re\c cues}\cite{pdu_r_man}. C'est ici dans le PDU-R qu'on trouve un probl\`eme parce que la trame re\c cue n'est pas activ\'e au début du programme.
 
 Cette première demo a \'et\'e con\c cue pour \^etre test\'e avec le logiciel \textbf{CANoe}\cite{canoe} dont nous ne possédions pas la licence et le SWC n'a pas march\'e comme attendu. Les possibles explications sont las suivantes :
 
@@ -28,14 +28,14 @@ Cette première demo a \'et\'e con\c cue pour \^etre test\'e avec le logiciel \t
     \item - Un SWC peu test\'e : Selon la documentation de ce test, ce SWC n'a pas \'et\'e teste au fond parce que son utilisation ne sera jamais implement\'e, c'est juste un test des logiciels.
 \end{itemize}
 
-Quand même, avec ce test j'ai acquis une connaissance basique du fonctionnement des logiciels AUTOSAR ce qui a rendu mon travaille future plus rapide et efficace. Un autre connaissance acquis dans ce partie c'était la partie de modélisation et le modèle de ECU déjà développe sera utilise plus tard.
-
 \begin{figure}[!htb]
  \centering
- \includegraphics[]{img/first_demo_testbench.png}
- \caption{Premier demo}
- \label{fig:first-demo-diagram}
+ \includegraphics[width=\textwidth]{img/autosar_com_stack.png}
+ \caption{Autosar Communication Stack\cite{sock_adp_man}}
+ \label{fig:autosar-com-stack}
 \end{figure}
+
+Quand même, avec ce test j'ai acquis une connaissance basique du fonctionnement des logiciels AUTOSAR ce qui a rendu mon travaille future plus rapide et efficace. Un autre connaissance acquis dans ce partie c'était la partie de modélisation et le modèle de ECU déjà développe sera utilise plus tard.
 
 \subsection{TC37xEXT}
 
