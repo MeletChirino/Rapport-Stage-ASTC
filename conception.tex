@@ -52,11 +52,13 @@ Les testes doivent se faire en logiciel, il faut compiler un fichier \textit{.el
 Les connections internes du gateway sont montr\'es dans la figure \ref{fig:devices-diagram}. \`A partir de cette configuration le testbench assembl\'e se montre dans la figure \ref{fig:connections-diagram}. %Dans ce point nous nous sommes rendu compte que le aurix utilis\'e n'etait pas celui de la application, ce gateway utilis\'e la version extended \cite{aurix.tc37e} de cet aurix donc j'ai du le developper.
 
 \begin{figure}[!htb]
- \centering
- \includegraphics[width=\textwidth]{img/GWDemoConnections.PNG}
- \caption{Gateway Demo Devices \cite{gateway-pb}}
- \label{fig:devices-diagram}
+    \centering
+        \subfigure[Gateway Demo Devices \cite{gateway-pb}]{\includegraphics [width=5in]{img/GWDemoConnections.PNG}}
+        \subfigure[Details des connections Ethernet du gateway]{\includegraphics [width=5in]{img/eth_connections.png}}
+    \caption{Appareils du demo technique}
+    \label{fig:devices-diagram}
 \end{figure}
+
 
 \begin{figure}[!htb]
  \centering
@@ -80,6 +82,6 @@ Ce modele a \'et\'e developp\'e en C++ et SystemC \`a l'aide du datasheet du fou
 
 \subsubsection{Transceivers Marvell}
 
-Ces transceivers\cite{88Q2112}\cite{88Q1010} connectent la couche PHY avec le switch. Avant le démarrage du logiciel le systeme de exploitation verifie son statut pour initialiser les ports.
+Ces transceivers montr\'es dans la fiugre \ref{fig:devices-diagram}\cite{88Q2112}\cite{88Q1010} connectent la couche PHY avec le switch. Avant le démarrage du logiciel le systeme de exploitation verifie son statut pour initialiser les ports.
 
 Au moment de la rédaction de ce rapport, nous ne possédions pas les datasheet de ces transceivers. Dans la modèle du switch 88Q5050 est integr\'e les commandes necessarires pour "initialiser les transceivers".
