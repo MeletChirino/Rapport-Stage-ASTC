@@ -1,0 +1,25 @@
+@startuml
+!theme reddress-lightgreen
+'minty
+'lightgray
+start
+:CAN_PROTCOL;
+:CAN_DRV;
+:CAN_IF;
+:PDU_R;
+:SoAd_If;
+:SoAd_TxIf_TransmitPdu;
+:SoAd_TxIf_TransmitOverAllPduRouteDest;
+:SoAd_TxIf_TransmitPduRouteDest;
+:SoAd_Tx_CheckSoConStates;
+#pink:SoAd_GetStateOfSocket;
+floating note right: This is the last function, the rest are pointers to pointers
+:(SoAd_GetSocketDynOfPCConfig()[(Index)].StateOfSocketDyn);
+note right
+SoAd_GetSocketDynOfPCConfig() returns 
+SoAd_ConfigDataPtr->SocketDynOfPCConfig
+but SoAd_ConfigDataPtr is not readable
+from vlab so I can't debug.
+end note
+stop
+@enduml

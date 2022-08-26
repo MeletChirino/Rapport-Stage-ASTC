@@ -1,4 +1,5 @@
 @startuml
+!theme hacker
 component ECU2_CAN2 {
 	portout CAN as can_ecu2
 	portout ETH as eth_ecu2
