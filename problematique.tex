@@ -4,9 +4,9 @@
 
 Une Gateway est un noeud dans un réseau qui se communique avec un réseau extérieur \cite{gateway-definition}. Cette gateway permet de communiquer différents types de réseaux dans une voiture pour connecter plusieurs ECU's qui n'appartient pas au même reseau comme la CAN, LIN, Ethernet ou m\^eme 5G. 
 
-La societe \textit{Infineon Technologie GA} a developp\'e un gateway securis\'e automobile avec la reference KIT\_A2G\_TC377\_SEC\_GTW \cite{gateway} (fig \ref{fig:gw-photo}) qui utilise un microcontr\^oleur \textit{AURIX TC37xEXT} pour connecter les differents reseaux internes d'une voiture comme FlexRay, LIN, CAN ou Ethernet. Le syst\`eme d'exploitation pour cette gateway s'appelle MICROSAR Classic \cite{vector.microsar} et est fourni par Vector Informatik. Ce Syst\`eme d'explotation est compatible avec les standards AUTOSAR\cite{autosar-intro} donc le develeoppeur peut utiliser des <<software components>>\footnote{Dans la notation AUTOSAR les fonctions de la couche la plus haute d'abstraction sont appel\'es software components ou SWC\cite{swc_man}.} Autosar dans ce version de MICROSAR.
+La societe \textit{Infineon Technologie GA} a developp\'e un gateway securis\'e automobile avec la reference KIT\_A2G\_TC377\_SEC\_GTW \cite{gateway} (fig \ref{fig:gw-photo}) qui utilise un microcontr\^oleur \textit{AURIX TC37xEXT} pour connecter les differents reseaux internes d'une voiture comme FlexRay, LIN, CAN ou Ethernet. Le syst\`eme d'exploitation pour cette gateway s'appelle \textit{MICROSAR Classic} \cite{vector.microsar} et est fourni par \textit{Vector Informatik}. Ce syst\`eme d'explotation est compatible avec les standards AUTOSAR\cite{autosar-intro} donc le develeoppeur peut utiliser des <<software components>> (SWC)\footnote{Dans la notation AUTOSAR les pièces de logiciel qui font partie de la couche la plus haute d'abstraction sont appel\'es software components ou SWC\cite{swc_man}.} Autosar dans ce version de MICROSAR.
 
-Inclus dans la gateway, il se trouve un switch Ethernet securis\'e Marvell 88Q5050 qui a des connections Gigabit Ethernet en différents standards de l'industrie. Cette gateway nous offre une solution de connections en differents reseaux de la voiture totalement compatible avec AUTOSAR a differents vitesses de fonctionement et avec une haute degré de securit\'e. Dans le cas qu'une ECU connect\'e a la reseaux CAN demande certain information d'un Camera qui envoie des donn\'ees par Gigabit Ethernet ce communication sera possible en contr\^ol\'e par le developpeur en fonction de priorit\'es du syst\`eme.
+Inclus dans la gateway, il se trouve un switch Ethernet securis\'e Marvell 88Q5050\cite{sw88Q5050} qui a des connections Gigabit Ethernet en différents standards de l'industrie. Cette gateway nous offre une solution de connections en differents reseaux de la voiture totalement compatible avec AUTOSAR a differents vitesses de fonctionement et avec une haute degré de securit\'e. Dans le cas qu'une ECU connect\'e a la reseaux CAN demande certain information d'un Camera qui envoie des donn\'ees par Gigabit Ethernet ce communication sera possible en contr\^ol\'e par le developpeur en fonction de priorit\'es du syst\`eme. Sur la figure \ref{fig:gw-car} se montre une configuration des interconnections des reseaux dans une voiture.
 
 %La societe \textit{Infineon Technologie GA} a developp\'e un gateway securis\'e automobile avec la reference KIT\_A2G\_TC377\_SEC\_GTW \cite{gateway} (fig \ref{fig:gw-photo}) el cual corre con un microcontrolador \textit{AURIX TC37xEXT} para poder aumentar la conectividad de diferentes redes como el FlexRay, LIN, CAN y Ethernet dentro del automobil. El sistema operativo usado dentro de este gateway es fourni por Vector Informatik y se llama MICROSAR Classic \cite{vector.microsar}. Este sistema operativo es totalmente compatible con AUTOSAR lo cual nos deja con una ECU 100\% funcional sobre la cual se pueden correr software components (swc) compatibles con AUTOSAR. Ademas tambien se utilisa un switch ethernet securis\'e Marvell 88Q5050 que permite velocidad y ancho de banda estables con toda la seguridad que un automobil requiere.
 
@@ -15,6 +15,20 @@ Inclus dans la gateway, il se trouve un switch Ethernet securis\'e Marvell 88Q50
  \includegraphics[width=0.8\textwidth]{img/secure-gateway.jpg}
  \caption{KIT\_A2G\_TC377\_SEC\_GTW}
  \label{fig:gw-photo}
+\end{figure}
+
+\begin{figure}[!htb]
+ \centering
+ \includegraphics[width=\textwidth]{img/gateway_car.png}
+ \caption{Exemple des réseaux interconnect\'ees dans une voiture}
+ \label{fig:gw-car}
+\end{figure}
+
+\begin{figure}[!htb]
+ \centering
+ \includegraphics[width=0.5\textwidth]{img/Aurix.png}
+ \caption{AURIX (Automotive Realtime Integrated NeXt Generation Architecture)}
+ \label{fig:aurix-photo}
 \end{figure}
 
 Le syst\`eme d'exploitation est fournie avec une petite demo technique qui sert pour la prise en main de la gateway et tester son fonctionnement basique de connecter 2 reseaux avec des protocoles physiques et logiques incompatibles. Pour lancer la demo il est necessaire de connecter 2 ECU externes \`a certains ports CAN et Ethernet du gateway, voir figures \ref{fig:gw-demo-uc1} et \ref{fig:gw-demo-uc2} pour plus d'information concernant aux connections. La demo a 2 cas d'utilisation :
@@ -28,14 +42,14 @@ Le syst\`eme d'exploitation est fournie avec une petite demo technique qui sert 
 
 \begin{figure}[!htb]
  \centering
- \includegraphics[width=0.5\textwidth]{img/GWUseCase1.png}
+ \includegraphics[width=0.6\textwidth]{img/GWUseCase1.png}
  \caption{Gateway Demo Use Case 1}
  \label{fig:gw-demo-uc1}
 \end{figure}
 
 \begin{figure}[!htb]
  \centering
- \includegraphics[width=0.5\textwidth]{img/GWUseCase2.png}
+ \includegraphics[width=0.7\textwidth]{img/GWUseCase2.png}
  \caption{Gateway Demo Use Case 2}
  \label{fig:gw-demo-uc2}
 \end{figure}
