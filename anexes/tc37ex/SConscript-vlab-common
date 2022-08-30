@@ -1,0 +1,20 @@
+# Build the toolbox
+Import('env', 'vlab')
+
+paths = ['$BUILDDIR/vlab', '$BUILDDIR/remote_interface']
+excludes = env['FREEZE_EXCLUDE']
+excludes += ['calendar', 'gzip', 'py_compile', 'tarfile', 'zipfile']
+
+# Set the path replacement for the encrypted python code
+replace = ['${BUILDDIR}/vlab/aurix=${ROOTDIR}/src/vlab']
+
+toolbox = env.FreezePython('aurix', '__bootstrap__.py',
+                           bootstrap='__bootstrap__.py',
+                           version=env['VERSION'],
+                           excludes=excludes,
+                           paths=paths,
+                           replace=replace)
+
+buildinfo = env.BuildInfo('aurix', [])
+env.Depends(toolbox, [buildinfo, vlab])
+Return('toolbox')
