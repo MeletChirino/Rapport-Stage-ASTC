@@ -1,0 +1,24 @@
+B:
+AREA
+
+System.CPU TC377TE
+
+System.View
+
+CORE.ASSIGN 1.
+
+System.Config.ListCore
+
+CORE.SHOWACTIVE
+
+System.Mode.Attach
+
+;Change elf file path here
+;Data.load.auto "C:\workspace\Repos\zf_digital_twin_toolbox\test\system\zf_ASS\sample_bin\TD03V252000\TD03V252000.elf" /nocode /noclear /more
+Data.load.auto "D:\ifx_aurix_software_packages\Aurix2G\Vector_MICROSAR\CBD2000456_D02\Applications_GWDemo\SipAddon\StartApplication\Appl\TestSuit.elf" /nocode /noclear
+
+symbol.sourcepath.SETRECURSEDIR "D:\ifx_aurix_software_packages\Aurix2G\Vector_MICROSAR\CBD2000456_D02\Applications_GWDemo\SipAddon\StartApplication\Appl"
+symbol.sourcepath.SETRECURSEDIR "D:\ifx_aurix_software_packages\Aurix2G\Vector_MICROSAR\CBD2000456_D02"
+
+Data.list
+Frame /Locals /Caller

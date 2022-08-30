@@ -8,3 +8,10 @@ Le switch Marvell a \'et\'e modelis\'e pour initialiser les ports dans le logici
 En arrivant a la fin du projet l'aurix encore a des probl\`emes parce qu'il cherche \`a se communiquer avec des transceivers \`a travers du switch. La solution propos\'e pour ces composants, vu que ce sont des composant qui se communiquent \`a travers du switch, c'était faire une machine \`a \'etat qui répond le nécessaire pour initialiser les ports Ethernet mais c'est encore en développement et c'est un procès qui peut générer des problèmes au futur.
 
 Le premier cas d'utilisation a suivi le chemin des donn\'ees de la figure \ref{fig:autosar-com-stack} : \textit{Microcontroler} $->$ \textit{CAN\_Driver} $->$ \textit{CAN\_IF} $->$ \textit{PDU-R} $->$ \textit{SocketAdapter}\cite{sock_adp_man} $->$ \textit{DETError}\cite{det_man}. Dans le \textit{SocketAdapter} le logiciel trouve un probleme parce que les connections ne sont pas initialis\'es. Ce probl\`eme des ports touche aussi le deuxième cas d'utilisation donc cela n'a pas pu \^etre test\'e.
+
+\begin{figure}[!htb]
+ \centering
+ \includegraphics[width=\textwidth]{img/SoAd_Error.png}
+ \caption{Socket adaptor error}
+ \label{fig:soad-error}
+\end{figure}
