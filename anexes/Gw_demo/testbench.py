@@ -170,7 +170,7 @@ for mcan in range(3):
     for i in range(4):
         attribute_name = '{}.mcan{}{}.ENGINE'.format(aurix_model, mcan, i)
         vlab.write_attribute(attribute_name,  'token')
-        
+
 # --------------------
 # | UART CONNECTIONS |
 # --------------------
@@ -229,17 +229,48 @@ vlab.connect(
 # | GETH CONNECTIONS |
 # --------------------
 
-vlab.connect((marvell_88Q5050, "TX", 8), (aurix_model, "I_GETH_RX"), kind="buffer")
-vlab.connect((marvell_88Q5050, "RX", 8), (aurix_model, "O_GETH_TX"), kind="buffer")
+vlab.connect(
+        (marvell_88Q5050, "TX", 8),
+        (aurix_model, "I_GETH_RX"),
+        kind="buffer"
+        )
+vlab.connect(
+        (marvell_88Q5050, "RX", 8),
+        (aurix_model, "O_GETH_TX"),
+        kind="buffer"
+        )
 
-vlab.connect((marvell_88Q5050, "TX", 1), (aurix_model, "I_GETH1_RX"), kind="buffer")
-vlab.connect((marvell_88Q5050, "RX", 1), (aurix_model, "O_GETH1_TX"), kind="buffer")
+vlab.connect(
+        (marvell_88Q5050, "TX", 1),
+        (aurix_model, "I_GETH1_RX"),
+        kind="buffer"
+        )
+vlab.connect(
+        (marvell_88Q5050, "RX", 1),
+        (aurix_model, "O_GETH1_TX"),
+        kind="buffer"
+        )
+vlab.connect(
+        (marvell_88Q5050, "TX", 2),
+        ("Tc39x", "ETH_RX"),
+        kind="buffer"
+        )
+vlab.connect(
+        (marvell_88Q5050, "RX", 2),
+        ("Tc39x", "ETH_TX"),
+        kind="buffer"
+        )
 
-vlab.connect((marvell_88Q5050, "TX", 2), ("Tc39x", "ETH_RX"), kind="buffer")
-vlab.connect((marvell_88Q5050, "RX", 2), ("Tc39x", "ETH_TX"), kind="buffer")
-
-vlab.connect((marvell_88Q5050, "TX", 3), ("Ecu2Can2", "ETH_RX"), kind="buffer")
-vlab.connect((marvell_88Q5050, "RX", 3), ("Ecu2Can2", "ETH_TX"), kind="buffer")
+vlab.connect(
+        (marvell_88Q5050, "TX", 3),
+        ("Ecu2Can2", "ETH_RX"),
+        kind="buffer"
+        )
+vlab.connect(
+        (marvell_88Q5050, "RX", 3),
+        ("Ecu2Can2", "ETH_TX"),
+        kind="buffer"
+        )
 
 vlab.connect(
         ('MDIO_bus_', 'MDIO_STA_out', 0),

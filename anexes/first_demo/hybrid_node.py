@@ -140,7 +140,9 @@ class hybrid_node(sysc.sc_module, CommandProcessor):
                 )
 
         # ------ ETH settings ------
-        self.eth_node = EthernetNode.EthernetNode(sysc.sc_module_name('eth_node'))
+        self.eth_node = EthernetNode.EthernetNode(
+                sysc.sc_module_name('eth_node')
+                )
         self.mac_add = mac_add
         self.ether_type = 0xfeed
 
@@ -197,7 +199,8 @@ class hybrid_node(sysc.sc_module, CommandProcessor):
                 kwargs['name'],
                 output_port = (self.terminal_adapter, "TX_DATA"),
                 input_port = (self.terminal_adapter, "RX_DATA"),
-                baud_rate_func = self.terminal_adapter.obj.get_terminal_clock_freq
+                baud_rate_func =
+                    self.terminal_adapter.obj.get_terminal_clock_freq
                 )
         is_gui = (vlab.get_properties()["interface_mode"] == "graphical")
         exec('self.terminal = vlab.terminal.{}'.format(kwargs['name']))
@@ -279,13 +282,19 @@ class hybrid_node(sysc.sc_module, CommandProcessor):
                         )
 
     def on_event_rx_data_start(self):
-        self.count_event_rx_data_start.write(self.count_event_rx_data_start.read() + 1)
+        self.count_event_rx_data_start.write(
+                self.count_event_rx_data_start.read() + 1
+                )
 
     def on_event_tx_data(self):
-        self.count_event_tx_data.write(self.count_event_tx_data.read() + 1)
+        self.count_event_tx_data.write(
+                self.count_event_tx_data.read() + 1
+                )
 
     def on_event_tx_data_start(self):
-        self.count_event_tx_data_start.write(self.count_event_tx_data_start.read() + 1)
+        self.count_event_tx_data_start.write(
+                self.count_event_tx_data_start.read() + 1
+                )
 
     # -----------------------------
     # |------- LIN METHODS -------|
@@ -312,7 +321,10 @@ class hybrid_node(sysc.sc_module, CommandProcessor):
         for j in range(8):
                 frame.set_data_at_index(j, random.randint(0X1, 0xFF))
         frame = Ethernet(prototype_frame, payload=frame.get_data())
-        print self.name(), ": transmiting eth frame {} {}".format(frame.destination, frame.payload)
+        print self.name(), ": transmiting eth frame {} {}".format(
+                frame.destination,
+                frame.payload
+                )
         self.eth_node.transmit_frame(frame)
         # --- second transmition
         self.wait(1, sysc.SC_SEC)
@@ -327,12 +339,16 @@ class hybrid_node(sysc.sc_module, CommandProcessor):
         for j in range(8):
                 frame.set_data_at_index(j, random.randint(0X1, 0xFF))
         frame = Ethernet(prototype_frame, payload=frame.get_data())
-        print self.name(), ": transmiting eth frame {} {}".format(hex(frame.destination), frame.payload)
+        print self.name(), ": transmiting eth frame {} {}".format(
+                hex(frame.destination),
+                frame.payload
+                )
         self.eth_node.transmit_frame(frame)
 
     def on_eth_receive(self):
         frame = Ethernet(self.eth_node.get_latest_received_frame())
-        print self.name(), "Got something \nSOURCE={} \nDATA={} \nDESTINATION={}".format(
+        print self.name() +
+            "Got something \nSOURCE={} \nDATA={} \nDESTINATION={}".format(
             str(hex(frame.source)),
             str(frame.payload),
             str(hex(frame.destination))
@@ -348,7 +364,8 @@ class hybrid_node(sysc.sc_module, CommandProcessor):
             for j in range(40):
                 payload_data.append(random.randint(0X1, 0xFF))
             res_frame = Ethernet(prototype_frame, payload=frame.payload)
-            print self.name(), ": transmiting eth \nSOURCE={} \nDATA={} \nDESTINATION={}".format(
+            print self.name() +
+                ": transmiting eth \nSOURCE={} \nDATA={} \nDESTINATION={}".format(
                 hex(res_frame.source),
                 frame.payload,
                 str(hex(res_frame.destination))
@@ -362,7 +379,9 @@ class hybrid_node(sysc.sc_module, CommandProcessor):
         while self.eth_node.has_received_new_frame():
             if frame.destination == self.mac_add:
                 if frame.typeid == self.ether_type:
-                    print self.name(), "Got something {}".format(str(frame.payload))
+                    print self.name(), "Got something {}".format(
+                            str(frame.payload)
+                            )
 
     # -----------------------------
     # |------- CAN METHODS -------|
@@ -370,14 +389,14 @@ class hybrid_node(sysc.sc_module, CommandProcessor):
     def send_frame(self):
         frame = Frame()
         frames = [
-            #CanId, PduDlc, FD, ValidDLC
-            #(0x0501, 0xf, True, 1),
-            (0x324, 8, True, 8),
-            (0x0101, 8, False, 4),
-            (0x0178, 8, False, 4),
-            (0x0202, 8, True, 8),
-            (0x4501, 8, False, 4),
-            (0x5162, 8, False, 4),
+            #CanId,     PduDlc, FD,     ValidDLC
+            #(0x0501,   0xf,    True,   1),
+            (0x324,     8,      True,   8),
+            (0x0101,    8,      False,  4),
+            (0x0178,    8,      False,  4),
+            (0x0202,    8,      True,   8),
+            (0x4501,    8,      False,  4),
+            (0x5162,    8,      False,  4),
         ]
 
         for frame_config in frames:
@@ -519,9 +538,10 @@ def raw_data2frame(kwargs, data_bus):
         if kwargs.get('dlc'):
                 dlc = int(kwargs['dlc'])
 
-        frame_type = Frame.FRAME_TYPE_MESSAGE # make default value just because
+        frame_type = Frame.FRAME_TYPE_MESSAGE
         if kwargs.get('isExtended'):
-                if kwargs['type'] == 'Message' or kwargs['type'] == 'message':
+                if kwargs['type'] == 'Message' or
+                   kwargs['type'] == 'message':
                         frame_type = Frame.FRAME_TYPE_MESSAGE
         frame = Frame(
                 frame_type,
@@ -542,7 +562,10 @@ def raw_data2frame(kwargs, data_bus):
 
 def gen_random_frame(isFDEnabled = None, isExtended = None,
                      isRemote = None, dlcMax = None, useDlc = None):
-    """Returns a random frame taking into consideration the constraints provided"""
+    """
+    Returns a random frame taking into
+    consideration the constraints provided
+    """
     frame = Frame()
 
     # CAN or CAN FD

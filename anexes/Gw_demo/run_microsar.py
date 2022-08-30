@@ -23,7 +23,7 @@ vlab.path.append(hybrid_node_files)
 
 global old_sim_time
 old_sim_time = 0
- 
+
 AURIX_MODEL = 'tc37xext'
 
 def set_breakpoint_symbol(symbol_name, **kwargs):
@@ -112,13 +112,15 @@ def enable_mdio_bp(bp):
 
 if __name__ == '__main__':
     # Load VP
-    testbench_file = "--testbench={}\\{}".format(hybrid_node_files, "testbench.py")
+    testbench_file = "--testbench={}\\{}".format(
+            hybrid_node_files,
+            "testbench.py"
+            )
     vlab.load(
         "aurix.{}.sim".format(AURIX_MODEL),
         args=[
             testbench_file,
             '--debugger-config=all:trace32mcd',
-            #"--iss=fast",
             "--quantum-period=500",#quantum in nanoseconds => 1us
             '--debugger=all']
         )
@@ -131,44 +133,13 @@ if __name__ == '__main__':
     image_path = os.path.join(parent_folder, 'TestSuit.elf')
     vlab.load_image(
         image_path,
-        subject="{}.CPU0_SUBSYSTEM.CPU0".format(AURIX_MODEL) 
+        subject="{}.CPU0_SUBSYSTEM.CPU0".format(AURIX_MODEL)
         )
     vlab.enable_analysis(vlab.analysis.view.function_trace)
     vlab.add_trace(subject='{}.GETH.MDIO_out'.format(AURIX_MODEL) , sink=vlab.sink.vtf, verbose=False)
     vlab.add_trace(subject='{}.GETH.MDIO_in'.format(AURIX_MODEL) , sink=vlab.sink.vtf, verbose=False)
     vlab.add_trace(subject='{}.I_GETH_RX'.format(AURIX_MODEL) , sink=vlab.sink.vtf, verbose=False)
     vlab.add_trace(subject='{}.O_GETH_TX'.format(AURIX_MODEL) , sink=vlab.sink.vtf, verbose=False)
-    #vlab.add_trace(subject='tc37ex.GETH', sink=vlab.sink.vtf, verbose=False)
-    #vlab.add_trace(subject=AURIX_MODEL, sink=vlab.sink.vtf, verbose=False)
-
-    #-----------------------------
-    #|------- BREAKPOINTS -------|
-    #-----------------------------
-    #vlab.add_breakpoint(vlab.trigger.execute(0xa00dddf0, core="tc37ex.CPU0_SUBSYSTEM.CPU0"))
-    #vlab.add_breakpoint(vlab.trigger.execute(0xa00e5d9a, core="tc37ex.CPU0_SUBSYSTEM.CPU0"))#SoAd_RouteGrp_CheckAnyRoutGrpOnPduRouteDestEnabled
-    #vlab.add_breakpoint(vlab.trigger.execute(0xa00e60b2, core="tc37ex.CPU0_SUBSYSTEM.CPU0"))#inside SoAd_TxIf_TransmitPduRouteDest
-
-    #vlab.add_breakpoint(vlab.trigger.execute(vlab.get_symbol('SoAd_SoCon_HandleSoConStates')))
-    vlab.add_breakpoint(vlab.trigger.execute(vlab.get_symbol('Det_ReportError')))
-    vlab.add_breakpoint(
-        vlab.trigger.execute(vlab.get_symbol('SoAd_RouteGrp_CheckAnyRoutGrpOnPduRouteDestEnabled'))
-        )
-    #vlab.add_breakpoint(vlab.trigger.execute(vlab.get_symbol('SoAd_MainFunctionState')))
-    #vlab.add_breakpoint(vlab.trigger.execute(vlab.get_symbol('SoAd_IfTransmit')))
-    #vlab.add_breakpoint(vlab.trigger.execute(vlab.get_symbol('SoAd_Init')))
-    vlab.add_breakpoint(vlab.trigger.execute(vlab.get_symbol('SoAd_MainFunctionState')))
-
-    vlab.add_breakpoint(vlab.trigger.execute(vlab.get_symbol('EthSwt_30_88Q5050_VSwitchInit')))
-    #vlab.add_breakpoint(vlab.trigger.execute(0xa00d2bcc, core="tc37ex.CPU0_SUBSYSTEM.CPU0"))
-    #vlab.add_breakpoint(vlab.trigger.execute(vlab.get_symbol('Eth_30_Tc3xx_ReadMii')))
-    #vlab.add_breakpoint(vlab.trigger.execute(vlab.get_symbol('Eth_30_Tc3xx_WriteMii')))
-    '''
-    vlab.add_breakpoint(
-        vlab.trigger.port('tc37ex.O_GETH_TX'),
-        action = dump_eth_frame
-        )
-    '''
-    #vlab.add_breakpoint(vlab.trigger.execute(0xa00cd6a0, core="tc37ex.CPU0_SUBSYSTEM.CPU0"))
 
     #-----------------------------
     #|------- CAN CONFIGS -------|
@@ -254,7 +225,7 @@ if __name__ == '__main__':
     is_gui = (vlab.get_properties()["interface_mode"] == "graphical")
     if not is_gui:
         vlab.exit()
-        
+
     #This breakpoint shows what was written in out_term
     trig_ecu2can2_rec = vlab.trigger.port(
         (ecu2can2_uart, "uart_event_received_command")
@@ -271,16 +242,10 @@ if __name__ == '__main__':
         trig_tc39x_rec,
         action=display_tc39x
         )
-    '''
-    while not (tc39x.finish or ecu2can2.finish):
-        vlab.run(blocking=True)
-    vlab.exit()
-    '''
-        
+
     print """
     ---------------------
     | Ready to simulate |
     ---------------------
     """
     vlab.run(5000, 'ms')
-    #vlab.exit()
