@@ -3,6 +3,7 @@
 
 \documentclass[12pt]{article}
 \usepackage{natbib}
+\usepackage{minted}
 \usepackage[french]{babel}
 \usepackage[utf8x]{inputenc}
 \usepackage[smartEllipses]{markdown}
@@ -14,12 +15,13 @@
 \usepackage{graphicx}
 \usepackage[final]{pdfpages}
 \usepackage[T1]{fontenc}
+\usepackage{pgffor}
+\usepackage{listings}
 %\usepackage[colorinlistoftodos]{todonotes}
 \usepackage{xcolor}
 \usepackage[nottoc,numbib]{tocbibind}% Para que la bibliografia salga en el table of contents
 \colorlet{Mycolor1}{green!10!orange!90!}
 \usepackage{subfigure}
-\usepackage{plantuml}
 \sloppy
 \definecolor{lightgray}{gray}{0.5}
 \setlength{\parindent}{0pt}
@@ -146,9 +148,6 @@ Melet David
 %Para citar la bibliografia haces \cite{Photovoltaic}
 %Para referenciar las imagenes haces lo sgte \ref{fig:schema}
 
-%\newpage
-%\section{Anexes}
-
 %\subsection{Initialisation du switch}
 %\input{anexes/switch-init}
 %\label{anexe:switch-init}
@@ -193,5 +192,9 @@ Melet David
 %\end{figure}
 \newpage
 \bibliography{Biblio}
+
+\newpage
+\section{Anexes}
+\input{anexes}
 
 \end{document}
