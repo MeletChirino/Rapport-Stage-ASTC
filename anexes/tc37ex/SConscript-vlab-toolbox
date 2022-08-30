@@ -1,0 +1,83 @@
+# Create toolbox distribution
+import buildutils
+import os
+Import('env', 'common')
+
+platform = os.environ["OSCAR_PACKAGES_OS"]
+
+dist = []
+dist += env.FreezeInstall('$VLABDISTDIR', common)
+dist += env.InstallDir('$VLABDISTDIR/${TOOLBOXNAME}_scripts',
+                       '#src/vlab-toolbox-scripts')
+dist += env.Install('$VLABDISTDIR',
+                    '#src/__vlabtoolbox__.py')
+
+# Add license file
+dist += env.InstallAs('$VLABDISTDIR/LICENSE.txt',
+                      '$VLAB_HOME/license/vlab_license_agreement.txt')
+
+#add TSIM lib
+dist += env.Install('$VLABDISTDIR',
+                    '#models/ifx_tricore_ifx/lib/%s/tsim16p_e.dll'%platform)
+
+for cpu in range(6):
+    dist += env.InstallAs('$VLABDISTDIR/tsim16p_e{0}.dll'.format(cpu),
+                          '#models/ifx_tricore_ifx/lib/%s/tsim16p_e.dll'%platform)
+
+# Installing IFX MConfig files
+dist += env.Install('$VLABDISTDIR',
+                    Glob('#models/ifx_tricore_ifx/vlab/MConfig_*'))
+
+#add Config module dll
+dist += env.Install('$VLABDISTDIR',
+                    '#models/ifx_config/%s/ConfigModule.dll'%platform)
+
+dist += env.InstallAs('$VLABDISTDIR/examples/tc39x/system_test/Test_Tricore.elf',
+                    '#test/cases/system/tc39x/system/BaseFramework_TC39xA_Tricore.elf')
+dist += env.Install('$VLABDISTDIR/examples/tc39x/self_test',
+                       ['#test/cases/system/tc39x/simple/runtest.py',
+                        '#test/cases/system/tc39x/simple/BaseFramework_TC39xA_Tricore.elf',
+                        '#test/cases/system/tc39x/simple/BaseFramework_TC39xA_Tricore.map',
+                        '#test/cases/system/tc39x/simple/test.cmm',
+                        Glob('#test/cases/system/tc39x/simple/*.c')])
+
+
+dist += env.InstallAs('$VLABDISTDIR/examples/tc39xb/system_test/Test_Tricore.elf',
+                    '#test/cases/system/tc39xb/system/BaseFramework_TC39xB_tc.elf')
+dist += env.Install('$VLABDISTDIR/examples/tc39xb/self_test',
+                       ['#test/cases/system/tc39xb/simple/runtest.py',
+                        '#test/cases/system/tc39xb/simple/BaseFramework_TC39xB_tc.elf',
+                        '#test/cases/system/tc39xb/simple/BaseFramework_TC39xB_tc.map',
+                        '#test/cases/system/tc39xb/simple/test.cmm',
+                        Glob('#test/cases/system/tc39xb/simple/*.c')])
+
+
+dist += env.InstallAs('$VLABDISTDIR/examples/tc38x/system_test/Test_Tricore.elf',
+                    '#test/cases/system/tc38x/system/BaseFramework_TC38xA_tc.elf')
+dist += env.Install('$VLABDISTDIR/examples/tc38x/self_test',
+                       ['#test/cases/system/tc38x/simple/runtest.py',
+                        '#test/cases/system/tc38x/simple/BaseFramework_TC38xA_tc.elf',
+                        '#test/cases/system/tc38x/simple/BaseFramework_TC38xA_tc.map',
+                        '#test/cases/system/tc38x/simple/test.cmm',
+                        Glob('#test/cases/system/tc38x/simple/*.c')])
+
+dist += env.InstallAs('$VLABDISTDIR/examples/tc37xext/system_test/Test_Tricore.elf',
+                    '#target_software/ifx_aurix_tc3xx_software/Infineon_ILLD/TC37A/2_Out/Tricore_Gnuc/TC37A_tc.elf')
+
+
+dist += env.InstallAs('$VLABDISTDIR/examples/tc3ex/system_test/Test_Tricore.elf',
+                    '#test/cases/system/tc3ex/system/BaseFramework_TC3Ex_Tc.elf')
+dist += env.Install('$VLABDISTDIR/examples/tc3ex/self_test',
+                       ['#test/cases/system/tc3ex/simple/runtest.py',
+                        '#test/cases/system/tc3ex/simple/BaseFramework_TC3Ex_Tc.elf',
+                        '#test/cases/system/tc3ex/simple/BaseFramework_TC3Ex_Tc.map',
+                        '#test/cases/system/tc3ex/simple/test.cmm',
+                        Glob('#test/cases/system/tc3ex/simple/*.c')])
+
+platform = os.environ["OSCAR_PACKAGES_OS"]
+if platform in 'win-vc140-x64':
+    # Add Vector IB Flexray Demo Config file, as a first try
+    dist += env.Install('$VLABDISTDIR',
+                        '#models/vector_integration_bus/Source/IntegrationBus-Demos/FlexRay/IbConfig_DemoFlexray_NetSim.json')
+
+Return('dist')

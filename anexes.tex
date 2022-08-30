@@ -1,3 +1,4 @@
+\section{Annexes}
 \subsection{Codes du premier demo}
 
 \subsubsection{Hybrid Node}
@@ -14,6 +15,73 @@
 \label{anexe:first_demo:run_file}
 \subsubsection*{run\_file.py}
 \inputminted[autogobble]{python}{anexes/first_demo/run_microsar.py}
+
+\subsection{Codes du TC37xEXT}
+\label{anexe:tc37ex}
+
+\subsubsection{Fichiers d'assemblage}
+\label{anexe:tc37ex:assembly}
+\subsubsection*{defines.py}
+\label{anexe:tc37ex:defines}
+\inputminted[autogobble]{python}{anexes/tc37ex/defines.py}
+
+
+\subsubsection*{description.py}
+\label{anexe:tc37ex:description}
+\begin{par}
+Ce fichier description est utilise pour les modeles \textit{tc37x} et \textit{tc37xEXT}.
+\end{par}
+\inputminted[autogobble]{python}{anexes/tc37ex/description.py}
+
+\subsubsection{Fichiers de compilation}
+\label{anexe:tc37ex:compilation}
+\begin{par}
+Pour compiler vlab utilise \textit{Scons}. Dans les fichiers il faut ajouter les lignes de commandes suivants
+\end{par}
+\subsubsection*{\_\_bootstrap\_\_.py}
+\begin{verbatim}
+import aurix.tc37xext
+import aurix.tc37xext.__main__
+import aurix.tc37xext.sim
+import aurix.tc37xext.emem
+\end{verbatim}
+
+\subsubsection*{\_\_vlabtoolbox\_\_.py}
+\begin{verbatim}
+modules.append(
+    ("aurix.tc37xext.sim",["TC37xEXT", "Load simulator"])
+    )
+modules.append(
+    ("aurix_scripts.tc37xext_self_test",["TC37xEXT","Run self test"])
+    )
+\end{verbatim}
+
+\subsubsection{Fichiers de test}
+\label{anexe:tc37ex:tests}
+\begin{par}
+Pour tester l'aurix nous devons executer le fichier \textit{tc37xext\_self\_test.py} et il va executer les tests ecrits en c :
+\end{par}
+\begin{itemize}
+    \item test\_emem\_reg\_access.py
+    \item test\_mcmcan\_reg\_access.py
+    \item test\_geth\_reg\_access.py
+\end{itemize}
+
+\subsubsection*{tc37xext\_self\_test.py}
+\label{anexe:tc37ex:tests:self}
+\inputminted[autogobble]{python}{anexes/tc37ex/tests/tc37xext_self_test.py}
+
+\subsubsection*{test\_emem\_reg\_access.py}
+\label{anexe:tc37ex:tests:emem_reg_access}
+\inputminted[autogobble]{c}{anexes/tc37ex/tests/test_emem_reg_access_ext.c}
+
+\subsubsection*{test\_mcmcan\_reg\_access.py}
+\label{anexe:tc37ex:tests:mcmcan_reg_access}
+\inputminted[autogobble]{c}{anexes/tc37ex/tests/test_mcmcan_reg_access_ext.c}
+
+\subsubsection*{test\_geth\_reg\_access.py}
+\label{anexe:tc37ex:tests:geth_reg_access}
+\inputminted[autogobble]{c}{anexes/tc37ex/tests/test_geth_reg_access_ext.c}
 
 
 \subsection{Codes du demo de la gateway}

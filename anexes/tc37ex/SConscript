@@ -1,0 +1,140 @@
+import sconsutils
+import os
+
+# Build vlab toolbox package
+Import('env', 'buildtype', 'variants')
+
+# Build common models
+models = SConscript('models/SConscript',
+                    exports={'env': env, 'buildtype': buildtype})
+
+platform = os.environ["OSCAR_PACKAGES_OS"]
+if platform in 'win-vc100-x86':
+    # Build tc27x step B models
+    models += SConscript('models/SConscript-ifx-tc27xB',
+                         exports={'env': env, 'buildtype': buildtype})
+
+    # Build tc27x step C and tc29x step B models
+    models += SConscript('models/SConscript-ifx-tc27xC-tc29xB',
+                         exports={'env': env, 'buildtype': buildtype})
+
+# Build tc3xx common models
+models += SConscript('models/SConscript-ifx-tc3xx',
+                     exports={'env': env, 'buildtype': buildtype})
+
+# Build tc39x models
+models += SConscript('models/SConscript-ifx-tc39x',
+                     exports={'env': env, 'buildtype': buildtype})
+
+
+# Build tc39x Step B and TC38x models
+models += SConscript('models/SConscript-ifx-tc39xB-tc38x',
+                        exports={'env': env, 'buildtype': buildtype})
+
+# Included python modules
+extfiles = ['#models/ifx_tricore_ifx/vlab/tricore_iss_debug_facade.py',
+            '#models/ifx_tricore_ifx/vlab/tricore_variant.py',
+            '#models/ifx_tricore_ifx/vlab/tricore_disassembler.py',
+            ]
+
+extfiles.append('#models/ifx_tc3xx_sri_xbar/src/ifx_tc3xx_sri_xbar_description.py')
+
+# Build toolbox python package
+targets = Glob('*.py')
+
+# GTM packages
+bosch_models    = [model for model in models if 'bosch_gtm' in '%s' % model]
+models          = [model for model in models if 'bosch_gtm' not in '%s' % model]
+
+for (static_lib,shared_lib) in bosch_models:
+    folder_name = 'GTM' + ('%s'%static_lib.dir).split('GTM')[1]
+    targets += env.Install('$TOOLBOXNAME/bosch_gtm/%s' %
+                            folder_name, [static_lib, shared_lib])
+    targets += env.Install('$TOOLBOXNAME/bosch_gtm/%s' %
+                            folder_name, '#models/bosch_gtm/src/__init__.py')
+    if 'standard' in folder_name:
+        targets += env.Install('$TOOLBOXNAME/bosch_gtm/%s' %
+                                folder_name.split('standard')[0], '#models/bosch_gtm/src/__init__.py')
+
+
+version = os.environ["GTM_PMS_MCS_DESIGNER_VERSION"]
+toolboxdir = os.environ["OSCAR_TOOLS_DIR"]
+targets += env.Install('$TOOLBOXNAME/bosch_gtm',
+                       '#models/bosch_gtm/src/__init__.py')
+targets += env.Install('$TOOLBOXNAME/bosch_gtm', '#models/bosch_gtm/src/vlab')
+targets += env.Install('$TOOLBOXNAME/bosch_gtm',
+                       "{}/gtm_pms_mcs-designer-{}-$PLATFORM/gtm_pms_mcs".format(toolboxdir, version.lower()), exclude_files=["boost*"])
+
+#copy bosch_gtm_stub description
+targets += env.Install('$TOOLBOXNAME', '#src/models/bosch_gtm_stub/bosch_gtm_stub_description.py')
+
+# copy models descriptions
+targets += env.Install('$TOOLBOXNAME',
+                       '#models/ifx_tc3xx_stm/src/ifx_tc3xx_stm_description.py')
+targets += env.Install('$TOOLBOXNAME',
+                       '#models/renesas_pf3_eray_g6/src/ERay_description.py')
+targets += env.Install('$TOOLBOXNAME',
+                       '#models/ifx_tc3xx_geth/src/ifx_tc3xx_geth_description.py')
+targets += env.Install('$TOOLBOXNAME',
+                       '#models/bosch_mcan/src/mcan_description.py')
+targets += env.Install('$TOOLBOXNAME',
+                       '#models/ifx_tc3xx_dmu/src/ifx_tc3xx_dmu_description.py')
+
+
+### PMS 3 CORE ####
+# Included core-related python modules
+version = os.environ["IFX_TRICORE_TC162P_DESIGNER_VERSION"]
+toolboxdir = os.environ.get("OSCAR_TOOLS_DIR", "")
+fastiss_path = env.subst(
+    '{}/ifx_tricore_tc162p-designer-{}-$PLATFORM'.format(
+        toolboxdir, version.lower()))
+targets += env.InstallDir('$TOOLBOXNAME/ifx_tricore_tc162p',
+                          fastiss_path + '/ifx_tricore_tc162p')
+# Add FASTISS debug support
+targets += env.InstallDir('$TOOLBOXNAME/ifx_tricore_tc162p' + '/debug',
+                          fastiss_path + '/ifx_tricore_tc162p' + '/debug')
+
+### PMS 4 CORE ####
+# Build cores (these go directly into the unfrozen toolbox location)
+for core in ['ifx_tricore_tc162p']:
+    core_env = env.Clone()
+    core_env.DisableWarningsAsErrors()
+    core_env.Replace(ISSNAME=core)
+    core_dist = SConscript(
+        '#models/' + core + '/SConscript-dist-vlab',
+        {'env': core_env}, duplicate=0,
+        variant_dir=core_env.subst('models/${ISSNAME}'))
+    targets += core_env.Install('${TOOLBOXNAME}/${ISSNAME}_pms4', core_dist)
+
+# Exclude description.py so that we can support designer licensing.
+targets += env.InstallDir('$TOOLBOXNAME', 'vlab',
+                          exclude_files=['*.bak', 'description.py'])
+
+# Modify description.py to disable designer license check
+
+
+def make_loadable_without_designer_license(target, source, env):
+    data = open(source[0].abspath).read()
+    msg = """# This description is frozen.
+import aurix
+aurix._frozen_platform = True
+
+{original_contents}
+
+aurix._frozen_platform = False
+del aurix._frozen_platform
+""".format(original_contents=data)
+
+    open(target[0].abspath, 'w').write(msg)
+
+
+for vp in variants:
+    if vp is not ("tc3ex" or "tc37ex"): #TC3ex and TC37ex don't have a description, they use TC38x and TC37x, respectively
+        desc = vp.lower() + '/description.py'
+        targets += env.Command(env.subst('$TOOLBOXNAME/' + desc), 'vlab/' + desc,
+                            make_loadable_without_designer_license)
+
+targets += env.Install('$TOOLBOXNAME', models + extfiles)
+env.Depends(targets, extfiles)
+env.Clean(targets, '.')
+Return('targets')
