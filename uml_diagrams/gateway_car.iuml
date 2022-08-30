@@ -1,5 +1,5 @@
 @startuml
-!theme hacker
+!theme reddress-lightgreen
 title "Car Network Exemple"
 
 package "Car"{
