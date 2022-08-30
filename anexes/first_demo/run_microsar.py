@@ -28,7 +28,11 @@ def sim_time(descriptor):
     old_sim_time_ = old_sim_time
     new_sim_time = vlab.simulation_time().to_seconds() * 1000
     delta = new_sim_time - old_sim_time
-    print "\n----\ncyclic 250 @", new_sim_time, "\ndelta = ", delta, "\n----\n"
+    print "\n----\ncyclic 250 @" +
+                new_sim_time +
+                "\ndelta = " +
+                delta +
+                "\n----\n"
     old_sim_time = new_sim_time
 
 # ---- Set breakpoint in funciton execution ----
@@ -47,7 +51,11 @@ def switch_cyclic(descriptor):
     old_sim_time_ = old_sim_time
     new_sim_time = vlab.simulation_time().to_seconds() * 1000
     delta = new_sim_time - old_sim_time
-    print "\n----\nStartApplication_COM_RXTX_Cyclic @", new_sim_time, "\ndelta = ", delta, "\n----\n"
+    print "\n----\nStartApplication_COM_RXTX_Cyclic @" +
+                new_sim_time +
+                "\ndelta = " +
+                delta +
+                "\n----\n"
     old_sim_time = new_sim_time
 
 
@@ -77,13 +85,29 @@ def os_api_writeperipheral32(PeripheralID, Address, Value):
     if Address >= 0xf001c000 and Address <= 0xf001cfff:
         print "This is the flexray"
     elif Address >= 0xf0000800 and Address <= 0xf00008ff:
-        print "This is the Asynchronous/Synchronous Serial\nController with LIN 2 (ASCLIN2)"
-        vlab.write_memory(Address, Value, pack='<L', core='tc37x.CPU0_SUBSYSTEM.CPU0')
+        print "This is the Asynchronous/Synchronous Serial\n" +
+                "Controller with LIN 2 (ASCLIN2)"
+        vlab.write_memory(
+                Address,
+                Value,
+                pack = '<L',
+                core = 'tc37x.CPU0_SUBSYSTEM.CPU0
+                )
     elif Address >= 0xf0218000 and Address <= 0xf0218fff:
         print "This is the MCMCAN1 SFR (CAN1)"
-        vlab.write_memory(Address, Value, pack='<L', core='tc37x.CPU0_SUBSYSTEM.CPU0')
+        vlab.write_memory(
+                Address,
+                Value,
+                pack = '<L',
+                core='tc37x.CPU0_SUBSYSTEM.CPU0'
+                )
     else:
-        vlab.write_memory(Address, Value, pack='<L', core='tc37x.CPU0_SUBSYSTEM.CPU0')
+        vlab.write_memory(
+                Address,
+                Value,
+                pack = '<L',
+                core = 'tc37x.CPU0_SUBSYSTEM.CPU0'
+                )
 
 
 def fr_sendwup_fix(x):
@@ -101,11 +125,25 @@ def display_hybrid(bp):
     vlab.enable_breakpoint(bp)
 
 # Load VP
-testbench_file = "--testbench=%s\\%s"%(file_path, "startapp\\testbench.py")
-vlab.load("aurix.tc37x.sim", args=["--iss=fast", testbench_file,'--debugger-config=all:trace32mcd', '--debugger=all', "--quantum-period=500"])
+testbench_file = "--testbench=%s\\%s" % (
+        file_path,
+        "startapp\\testbench.py"
+        )
+vlab.load(
+    "aurix.tc37x.sim",
+    args = [
+        "--iss=fast",
+        testbench_file,
+        '--debugger-config=all:trace32mcd',
+        '--debugger=all',
+        "--quantum-period=500"
+        ]
+    )
 
 # Load image to VP
-image_path = u"D:\\ifx_aurix_software_packages\\Aurix2G\\Vector_MICROSAR\\CBD2000456_D02\\Applications\\SipAddon\\StartApplication\\Appl\\TestSuit.elf"
+image_path = u"D:\\ifx_aurix_software_packages\\Aurix2G\\" +
+    "Vector_MICROSAR\\CBD2000456_D02\\Applications\\" +
+    "SipAddon\\StartApplication\\Appl\\TestSuit.elf"
 vlab.load_image(
     image_path,
     subject="tc37x.CPU0_SUBSYSTEM.CPU0"
@@ -129,18 +167,24 @@ def bp_fun(bp):
 set_breakpoint_symbol('Com_RxIndication')
 
 #bp before set deferred handle
-vlab.add_breakpoint(vlab.trigger.execute(0xa00af606, core="tc37x.CPU0_SUBSYSTEM.CPU0"))
+vlab.add_breakpoint(
+        vlab.trigger.execute(
+            0xa00af606,
+            core = "tc37x.CPU0_SUBSYSTEM.CPU0"
+            )
+        )
 # bp before the callback
-vlab.add_breakpoint(vlab.trigger.execute(0xa00aeec4, core="tc37x.CPU0_SUBSYSTEM.CPU0")) 
+vlab.add_breakpoint(
+        vlab.trigger.execute(
+            0xa00aeec4,
+            core = "tc37x.CPU0_SUBSYSTEM.CPU0"
+            )
+        )
 
-# Rewriting signal Com_RxSigInfo
-'''
-vlab.write_symbol(vlab.get_symbol('Com_RxSigInfo[15].RxCbkFuncPtrAckIdxOfRxSigInfo', 'tc37x.CPU0_SUBSYSTEM.CPU0', r'D:\ifx_aurix_software_packages\Aurix2G\Vector_MICROSAR\CBD2000456_D02\Applications\SipAddon\StartApplication\Appl\TestSuit.elf', space='virtual'), 0x0)
-vlab.write_symbol(vlab.get_symbol('Com_RxSigInfo[16].RxCbkFuncPtrAckIdxOfRxSigInfo', 'tc37x.CPU0_SUBSYSTEM.CPU0', r'D:\ifx_aurix_software_packages\Aurix2G\Vector_MICROSAR\CBD2000456_D02\Applications\SipAddon\StartApplication\Appl\TestSuit.elf', space='virtual'), 0x0)
-'''
-
-
-set_breakpoint_symbol('StartApplication_OnDataRec_RxData', action = switch_cyclic)
+set_breakpoint_symbol(
+    'StartApplication_OnDataRec_RxData',
+    action = switch_cyclic
+    )
 set_breakpoint_symbol('StartApplication_Cyclic250ms', action = sim_time)
 
 #-----------------------------

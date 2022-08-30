@@ -11,8 +11,15 @@ can_files = os.path.dirname(__file__)
 vlab.path.append(can_files)
 
 # Create bus can
-CanBus = vlab.component(name="CANTokenBusRouter", module="can.CANTokenBusRouter")
-Can = vlab.instantiate(CanBus, "CanBus", args=[vlab.NAME, 10])
+CanBus = vlab.component(
+        name="CANTokenBusRouter",
+        module="can.CANTokenBusRouter"
+        )
+Can = vlab.instantiate(
+        CanBus,
+        "CanBus",
+        args = [vlab.NAME, 10]
+        )
 # -------- RESET CONNECTIONS --------
 vlab.connect(vlab.STUB, ("CanBus","RESETN"), default=True)
 vlab.connect(vlab.STUB, ("CanBus","RESET"), default=False)
@@ -27,8 +34,14 @@ uart_rx_data_conn = vlab.connect((uart_bus, 'OUT_RX_DATA'))
 #vlab.instantiate("transceiver", "CustomCanNode")
 vlab.instantiate("hybrid_node", "HybridNode0", args=[vlab.NAME, 0x234])
 
-vlab.component('uart_terminal_adapter', module='lin.uart_terminal_adapter')
-hybrid_adapter = vlab.instantiate('uart_terminal_adapter', "HybridUartAdapter")
+vlab.component(
+    'uart_terminal_adapter',
+    module='lin.uart_terminal_adapter'
+    )
+hybrid_adapter = vlab.instantiate(
+                    'uart_terminal_adapter',
+                    "HybridUartAdapter"
+                    )
 
 
 # -------------------

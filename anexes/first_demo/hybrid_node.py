@@ -67,11 +67,16 @@ class hybrid_node(sysc.sc_module, CommandProcessor):
         self.UART_ENABLED = sysc.sc_in_sc_logic("UART_ENABLED")
         self.uart_msg = ''
         self.resp = 'GOT IT'
-        self.uart_event_received_command = sysc.sc_out_unsigned_int('uart_event_received_command')
-        self.count_event_rx_data = sysc.sc_out_unsigned_int('count_event_rx_data')
-        self.count_event_rx_data_start = sysc.sc_out_unsigned_int('count_event_rx_data_start')
-        self.count_event_tx_data = sysc.sc_out_unsigned_int('count_event_tx_data')
-        self.count_event_tx_data_start = sysc.sc_out_unsigned_int('count_event_tx_data_start')
+        self.uart_event_received_command = sysc.sc_out_unsigned_int(
+                'uart_event_received_command')
+        self.count_event_rx_data = sysc.sc_out_unsigned_int(
+                'count_event_rx_data')
+        self.count_event_rx_data_start = sysc.sc_out_unsigned_int(
+                'count_event_rx_data_start')
+        self.count_event_tx_data = sysc.sc_out_unsigned_int(
+                'count_event_tx_data')
+        self.count_event_tx_data_start = sysc.sc_out_unsigned_int(
+                'count_event_tx_data_start')
 
         # Instantiate basic UART node
         self.uart_node = uart_node(self.name())
@@ -81,10 +86,26 @@ class hybrid_node(sysc.sc_module, CommandProcessor):
         self.uart_node.TX_CONTROL.bind(self.UART_TX_CONTROL)
         self.uart_node.TX_DATA.bind(self.UART_TX_DATA)
         # Declare event handlers
-        self.spawn_method(self.on_event_rx_data, [self.uart_node.event_rx_data], dont_initialize=True)
-        self.spawn_method(self.on_event_rx_data_start, [self.uart_node.event_rx_data_start], dont_initialize=True)
-        self.spawn_method(self.on_event_tx_data, [self.uart_node.event_tx_data], dont_initialize=True)
-        self.spawn_method(self.on_event_tx_data_start, [self.uart_node.event_tx_data_start], dont_initialize=True)
+        self.spawn_method(
+                self.on_event_rx_data,
+                [self.uart_node.event_rx_data],
+                dont_initialize = True
+                )
+        self.spawn_method(
+                self.on_event_rx_data_start,
+                [self.uart_node.event_rx_data_start],
+                dont_initialize=True
+                )
+        self.spawn_method(
+                self.on_event_tx_data,
+                [self.uart_node.event_tx_data],
+                dont_initialize = True
+                )
+        self.spawn_method(
+                self.on_event_tx_data_start,
+                [self.uart_node.event_tx_data_start],
+                dont_initialize = True
+                )
 
 
         # ------ LIN settings ------
@@ -112,7 +133,11 @@ class hybrid_node(sysc.sc_module, CommandProcessor):
 
         self.lin_node.TX_DATA.bind(self.LIN_TX_DATA)
 
-        self.spawn_method(self.lin_on_event_rx_data, [self.lin_node.event_data], dont_initialize=True)
+        self.spawn_method(
+                self.lin_on_event_rx_data,
+                [self.lin_node.event_data],
+                dont_initialize=True
+                )
 
         # ------ ETH settings ------
         self.eth_node = EthernetNode.EthernetNode(sysc.sc_module_name('eth_node'))
@@ -186,7 +211,9 @@ class hybrid_node(sysc.sc_module, CommandProcessor):
         MSG = kwargs['msg']
         vlab.print_in_terminal(self.terminal, MSG)
         #this breakpoint is used for showing what youre typing in the terminal
-        trig_0_rx_updated = vlab.trigger.port((self.terminal_adapter, "RX_DATA"))
+        trig_0_rx_updated = vlab.trigger.port(
+                (self.terminal_adapter, "RX_DATA")
+                )
         bp_0_rx = vlab.add_breakpoint(trig_0_rx_updated, action=self.echo)
 
     def echo(self, bp):
@@ -247,8 +274,9 @@ class hybrid_node(sysc.sc_module, CommandProcessor):
                         self.send_char(char)
                 print self.command
                 self.exec_command(self.command[:-1])
-                self.uart_event_received_command.write(self.uart_event_received_command.read() + 1)
-
+                self.uart_event_received_command.write(
+                        self.uart_event_received_command.read() + 1
+                        )
 
     def on_event_rx_data_start(self):
         self.count_event_rx_data_start.write(self.count_event_rx_data_start.read() + 1)
@@ -265,8 +293,6 @@ class hybrid_node(sysc.sc_module, CommandProcessor):
     def lin_on_event_rx_data(self):
         response = Response_t()
         success = self.lin_node.get_latest_response(self.lin_fid, response)
-        #print self.name(), "\nResponse :", response, "\ndata: ", response.data
-        #self.print_ter(self.name(), "LIN", response.data)
 
 
     # -----------------------------
@@ -370,15 +396,29 @@ class hybrid_node(sysc.sc_module, CommandProcessor):
                     frame.set_data_at_index(j, random.randint(0X1, 0xFF))
             sysc.wait(1000, sysc.SC_MS)
             if self.can_id == 0x123:
-                print "{}:---> transmit_thread started @ {} sec\n--> ID:{} {}\n".format(self.name(), sysc.sc_time_stamp().to_seconds(), hex(frame.get_id()), frame.get_data())
+                print "{}:---> transmit_thread started @ {}" +
+                "sec\n--> ID:{} {}\n".format(
+                    self.name(),
+                    sysc.sc_time_stamp().to_seconds(),
+                    hex(frame.get_id()),
+                    frame.get_data()
+                    )
                 self.can.transmit_frame(frame)
 
     def set_id(self, id_):
         self.can_id = id_
-        print self.name(), ": id set to ", self.can_id," at", sysc.sc_time_stamp().to_seconds(), "sec"
+        print self.name() +
+            ": id set to " +
+            self.can_id +
+            " at" +
+            sysc.sc_time_stamp().to_seconds(), "sec"
 
     def finished_activation(self):
-        print self.name(), ": Finished activation at", sysc.sc_time_stamp().to_seconds(), "sec"
+        print self.name()+
+            ": Finished activation at" +
+            sysc.sc_time_stamp().to_seconds() +
+            "sec"
+
     def sim_time(self):
         return vlab.simulation_time().to_seconds() * 1000
 
@@ -392,7 +432,9 @@ class hybrid_node(sysc.sc_module, CommandProcessor):
         if not empty:
             self.display_can()
         if(frame.get_id() == self.can_id):
-                print self.name(), ":Got frame @{} ms\n DATA: {}".format(self.sim_time(), frame.get_data())
+                print self.name() +
+                        ":Got frame @{} ms\n" +
+                        "DATA: {}".format(self.sim_time(), frame.get_data())
                 self.data_log.append({
                         "bus": "CAN",
                         "data": frame.get_data(),
@@ -403,7 +445,13 @@ class hybrid_node(sysc.sc_module, CommandProcessor):
     def display_can(self):
         frame = self.can.get_latest_received_frame()
         if(frame.get_id() == self.can_id):
-                vlab.print_in_terminal(self.terminal, "\n->GOT CAN FRAME:\nCANID: {} DATA: {} @{}\n".format(str(hex(frame.get_id())), str(frame.get_data()), self.sim_time()))
+                vlab.print_in_terminal(self.terminal,
+                        "\n->GOT CAN FRAME:\nCANID: {} DATA: {}"+
+                        "@{}\n".format(
+                            str(hex(frame.get_id())),
+                            str(frame.get_data()),
+                            self.sim_time())
+                        )
 
     def activate(self):
         self.can.activate()
@@ -411,16 +459,24 @@ class hybrid_node(sysc.sc_module, CommandProcessor):
 
     def print_ter(self, node_name, data_bus, data):
         time_ = simulation_time().to_seconds() * 1000
-        string_ = "\n>>t = " + str(time_) + "ms >>" + node_name + ">>" + data_bus + " > "
-        vlab.print_in_terminal(vlab.terminal.hybrid_node_terminal, string_)
-        vlab.print_in_terminal(vlab.terminal.hybrid_node_terminal, str(data))
-        vlab.print_in_terminal(vlab.terminal.hybrid_node_terminal, "\n$")
+        string_ = "\n>>t = " + str(time_) + "ms >>" +
+                  node_name + ">>" + data_bus + " > "
+        vlab.print_in_terminal(
+                vlab.terminal.hybrid_node_terminal,
+                string_
+                )
+        vlab.print_in_terminal(
+                vlab.terminal.hybrid_node_terminal,
+                str(data)
+                )
+        vlab.print_in_terminal(
+                vlab.terminal.hybrid_node_terminal,
+                "\n$"
+                )
 
     # ----------------------------------
     # |------- COMMANDS METHODS -------|
     # ----------------------------------
-#CAN id=0x202 type=Message isRemote=False isExtended=False dlc=7 data=3,3,12,56,06,47,8
-#CAN id=0x324 type=Message isRemote=False isExtended=False dlc=7 data=3,3,12,56,06,47,8
     def command_CAN(self):
         super(hybrid_node)
         print self.name(), ":Transmiting frame @", self.sim_time(), "ms"
@@ -428,7 +484,6 @@ class hybrid_node(sysc.sc_module, CommandProcessor):
         frame.show()
         self.can.transmit_frame(frame)
 
-#LIN fid=0x7 data=3,42,3,6,56
     def command_LIN(self):
         super(hybrid_node)
         frame, fid = raw_data2frame(self.kwargs, "LIN")
@@ -443,7 +498,6 @@ class hybrid_node(sysc.sc_module, CommandProcessor):
         super(hybrid_node)
         error = "Command " + command[8:] + " not found"
         self.print_ter(self.name(), "COMMAND_PROCESSOR", error)
-
 
 
 def raw_data2frame(kwargs, data_bus):
@@ -486,7 +540,8 @@ def raw_data2frame(kwargs, data_bus):
                 fid = int(kwargs['fid'], 16)
                 return frame, fid
 
-def gen_random_frame(isFDEnabled = None, isExtended = None, isRemote = None, dlcMax = None, useDlc = None):
+def gen_random_frame(isFDEnabled = None, isExtended = None,
+                     isRemote = None, dlcMax = None, useDlc = None):
     """Returns a random frame taking into consideration the constraints provided"""
     frame = Frame()
 
