@@ -14,7 +14,7 @@ Avant la conception du projet il est nécessaire la prise en main du logiciel VL
 
 \subsection{Premier d\'emo technique}
 
-Le premier exemple est fait pour tester le logiciel avec une configuration super simple. Il consiste a envoyer une trame CAN et le SWC la renvoie vers le CANID source. Pour cet exemple une ECU générique a \'et\'e modélisé pour recevoir des trames CAN et LIN. Sur la figure \ref{fig:first-demo-diagram} se montre un diagrame de block des communications. Le code de ces ECUs se trouve dans l'anexe \ref{anexe:first_demo:hybrid_node}. Le code pour démarrer la simulation se trouve dans l'anexe \ref{anexe:first_demo:run_file}. 
+Le premier exemple est fait pour tester le logiciel avec une configuration aussi simple que possible. Il consiste a envoyer une trame CAN et le SWC la renvoie vers le CAN-ID source. Pour cet exemple une ECU générique a \'et\'e modélisé pour l'envoi et reception des trames CAN et LIN. Sur la figure \ref{fig:first-demo-diagram} se montre un diagrame de block des communications. Le code de ces ECUs se trouve dans l'anexe \ref{anexe:first_demo:hybrid_node}. Le code pour démarrer la simulation se trouve dans l'anexe \ref{anexe:first_demo:run_file}. 
 
 
 \begin{figure}[!htb] 
@@ -30,7 +30,7 @@ Cette première démo a été conçue pour être teste avec le logiciel \textbf{
 
 \begin{itemize} 
     \item - Un protocole inconnu : Même si CANoe utilise le protocole CAN, il envoie peut-être d'autres trames d'identification avant le test. 
-    \item - Un SWC peu test\'e : Selon la documentation de ce test, ce SWC n'a pas \'et\'e teste au fond parce que son utilisation ne sera jamais implémentée, c'est juste un test des logiciels. 
+    \item - Un SWC peu test\'e : Selon la documentation de ce test, ce SWC n'a pas \'et\'e teste au fond parce que son utilisation ne sera jamais implémentée dans une environnement réel, c'est juste un test des logiciels. 
 
 \end{itemize} 
 
@@ -55,82 +55,48 @@ Pour ce type de modélisation les informations sont fournies dans un fichier pyt
 
 Les tests doivent se faire en logiciel, il faut compiler un fichier \textit{.elf} et le monter sur la plateforme virtuelle créée et lancer un script de test qui vérifie si tout se passe bien. Dans le cas précis du \textit{TC37xEXT}, nous avons test\'e l'accès aux registres de mémoire ajout\'e et des interfaces MCMCAN et GETH. Les tests se trouvent dans l'annexe \ref{anexe:tc37ex:tests}. 
 
+
 \subsection{Gateway Demo} 
 
-  
-
-Grace a tout le développement déjà fait démarrer cette simulation a été plus rapide. Les connections internes du Gateway sont montres dans la figure \ref{fig:devices-diagram}. A partir de cette configuration le testbench assemble se montre dans la figure \ref{fig:connections-diagram}.  
-
-  
+Grace a tout le développement déjà fait démarrer cette simulation a été plus rapide. Les connections internes du Gateway sont montres dans la figure \ref{fig:devices-diagram}. A partir de cette configuration le testbench assemble se montre dans la figure \ref{fig:connections-diagram}. Codes sur l'annexe \ref{anexe:gw_demo:testbench}. 
 
 \begin{figure}[!htb] 
-
     \centering 
-
-        \subfigure[Gateway Démo Devices \cite{gateway-pb}]{\includegraphics [width=5in]{img/GWDemoConnections.PNG}} 
-
-        \subfigure[Details des connections Ethernet du Gateway]{\includegraphics [width=5in]{img/eth_connections.png}} 
-
+    \subfigure[Gateway Démo Devices \cite{gateway-pb}]{\includegraphics [width=5in]{img/GWDemoConnections.PNG}} 
+    \subfigure[Details des connections Ethernet du Gateway]{\includegraphics [width=5in]{img/eth_connections.png}} 
     \caption{Appareils de la démo technique} 
-
     \label{fig:devices-diagram} 
-
 \end{figure} 
 
-  
-
-  
-
 \begin{figure}[!htb] 
-
-\centering 
-
-\includegraphics[width=\textwidth]{img/GWConnectionsDiagram.png} 
-
-\caption{Gateway Connections Diagram, assemble avec le testbench de l'annexe \ref{anexe:gw_demo:testbench}} 
-
-\label{fig:connections-diagram} 
-
+    \centering 
+    \includegraphics[width=\textwidth]{img/GWConnectionsDiagram.png} 
+    \caption{Gateway Connections Diagram, assemble avec le testbench de l'annexe \ref{anexe:gw_demo:testbench}} 
+    \label{fig:connections-diagram} 
 \end{figure} 
 
-  
-
 \begin{figure}[!htb] 
-
 \centering 
-
 \includegraphics[width=\textwidth]{img/gateway_block_diagram.png} 
-
 \caption{Gateway Block diagram} 
-
 \label{fig:block diagram} 
-
 \end{figure} 
 
-  
 
 \subsubsection{Switch Marvell 88Q5050} 
 
-  
-
-Avant de démarrer les SWC le logiciel de la Gateway vérifie si toutes les composants et buses de données sont présents. Un des composants présents dans la carte est le Switch Ethernet Marvell 88Q5050\cite{sw88Q5050}. C'est un switch sécurise optimise pour être utilise dans l'industrie automobile. Il est connecté aux ECUs externes via ports Ethernet et avec l'aurix a travers d'un port Ethernet et un bus MDIO\cite{mdio-background}. Ce bus MDIO est utilisé pour accéder aux registres du switch à travers de l'aurix. De cette façon nous pouvons gérer le fonctionnement interne du switch avec l'aurix. Comme ce n'est pas une méthode de communication habituelle j'ai dû développer un modèle de bus pour l'envoie de données a travers de ce bus en C++ avec systemC. L'implémentation se trouve dans l'annexe \ref{anexe:gw_demo:mdio_bus}. 
+Avant de démarrer les SWC le logiciel de la Gateway vérifie si toutes les composants et buses de données sont présents. Un des composants présents dans la carte est le Switch Ethernet Marvell 88Q5050\cite{sw88Q5050}. C'est un switch sécurise optimise pour être utilise dans l'industrie automobile. Il est connecté aux ECUs externes via ports Ethernet et avec l'aurix a travers d'un port Ethernet et un bus MDIO\cite{mdio-background}. Ce bus MDIO est utilisé pour accéder aux registres du switch à travers de l'aurix. De cette façon nous pouvons gérer le fonctionnement interne du switch avec l'aurix. Comme ce n'est pas une méthode de communication habituelle j'ai dû développer un modèle de bus pour l'envoie de données \`a travers de ce bus en C++ avec systemC. L'implémentation se trouve dans l'annexe \ref{anexe:gw_demo:mdio_bus}. 
 
   
 
 Le modèle du switch Ethernet a été développé en systemC aussi à l'aide de la datasheet du fournisseur. Pour ce modèle j'ai suivi la procédure interne de modélisation des composants en ajoutant la quantité de buses, registres, ports et fonctionnalités de chaque élément. Ce développement a des informations confidentielles donc il ne sera pas montre dans ce rapport. 
 
-  
-
 \subsubsection{Transceivers Marvell} 
 
-  
 
-Ces transceivers montr\'es dans la figure \ref{fig:devices-diagram}\cite{88Q2112}\cite{88Q1010} connectent la couche PHY avec le switch. Avant le démarrage du logiciel le système d'exploitation vérifie son statut pour initialiser les ports. 
-
-  
+Les transceivers 88Q1010 et 88Q2112, montr\'es dans la figure \ref{fig:devices-diagram}\cite{88Q2112}\cite{88Q1010}, connectent la couche physique (PHY) avec le switch. Avant le démarrage du logiciel le système d'exploitation vérifie son statut pour initialiser les ports. 
 
 Au moment de la rédaction de ce rapport, nous ne possédions pas les datasheets de ces transceivers. Dans le modèle du switch 88Q5050 est intégré les commandes nécessaires pour "initialiser les transceivers". 
 
-  
 
 La simulation est exécutée dans le fichier de l'annexe \ref{anexe:gw_demo:run_file}. 

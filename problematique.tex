@@ -2,11 +2,11 @@
 
 \subsection{Description du projet}
 
-Une Gateway est un nœud dans un réseau qui se communique avec un réseau extérieur \cite{gateway-definition}. Cette Gateway permet de communiquer différents types de réseaux dans une voiture pour connecter plusieurs Ecus qui n'appartient pas au même réseau comme la CAN, LIN, Ethernet ou même 5G. 
+Une Gateway est un nœud dans un réseau qui se communique avec un réseau extérieur \cite{gateway-definition}. Cette Gateway, dans une voiture, permet de communiquer différents ECUs li\'ees aux réseaux comme la CAN, LIN, Ethernet ou même 5G. 
 
 La société \textit{Infineon Technologie GA} a développé un Gateway sécurisé automobile avec la référence KIT\_A2G\_TC377\_SEC\_GTW \cite{gateway} (fig \ref{fig:gw-photo}) qui utilise un microcontrôleur \textit{AURIX TC37xEXT} pour connecter les différents réseaux internes d'une voiture comme FlexRay, LIN, CAN ou Ethernet. Le système d'exploitation pour cette Gateway s'appelle \textit{MICROSAR Classic} \cite{vector.microsar} et est fourni par \textit{Vector Informatik}. Ce système d'exploitation est compatible avec les standards AUTOSAR\cite{autosar-intro} donc le développeur peut utiliser des <<software components>> (SWC)\footnote{Dans la notation AUTOSAR les pièces de logiciel qui font partie de la couche la plus haute d'abstraction sont appel\'es software components ou SWC\cite{swc_man}.} Autosar dans cette version de MICROSAR. 
 
-Inclus dans la Gateway, il se trouve un switch Ethernet sécurisé Marvell 88Q5050\cite{sw88Q5050} qui a des connections Gigabit Ethernet en différents standards de l'industrie. Cette Gateway nous offre une solution de connections en différents réseaux de la voiture totalement compatible avec AUTOSAR a différents vitesses de fonctionnement et avec un haut degré de securit\'e. Dans le cas qu'une ECU connect\'e à la réseaux CAN demande certaine information d'un Camera qui envoie des données par Gigabit Ethernet ce communication sera possible de contrôler par le développeur en fonction de priorités du système. Sur la figure \ref{fig:gw-car} se montre une configuration des interconnections des réseaux dans une voiture. 
+Inclus dans la Gateway, il se trouve un switch Ethernet sécurisé Marvell 88Q5050\cite{sw88Q5050} qui a des connections Gigabit Ethernet en différents standards de l'industrie. Cette Gateway nous offre une solution de connections en différents réseaux de la voiture totalement compatible avec AUTOSAR \`a différents vitesses de fonctionnement et avec un haut degré de securit\'e. Dans le cas qu'une ECU connect\'ee à la réseaux CAN demande certaine information d'un Camera qui envoie des données par Gigabit Ethernet ce communication sera possible de contrôler par le développeur en fonction de priorités du système. Sur la figure \ref{fig:gw-car} se montre une configuration des interconnections des réseaux dans une voiture. 
 
 \begin{figure}[!htb]
  \centering
@@ -29,7 +29,7 @@ Inclus dans la Gateway, il se trouve un switch Ethernet sécurisé Marvell 88Q50
  \label{fig:aurix-photo}
 \end{figure}
 
-Le système d'exploitation est fourni avec une petite démo technique qui sert pour la prise en main de la Gateway et tester son fonctionnement basique de connecter 2 réseaux avec des protocoles physiques et logiques incompatibles. Pour lancer la démo il est nécessaire de connecter 2 ECU externes \`a certains ports CAN et Ethernet du Gateway, voir figures \ref{fig:gw-demo-uc1} et \ref{fig:gw-demo-uc2} pour plus d'information concernant aux connections. La démo a 2 cas d'utilisation : 
+Le système d'exploitation est fourni avec une petite démo technique qui sert pour la prise en main de la Gateway et tester son fonctionnement basique de connecter 2 réseaux avec des protocoles physiques et logiques incompatibles. Pour lancer la démo il est nécessaire de connecter 2 ECU externes \`a certains ports CAN et Ethernet du Gateway, voir figure \ref{fig:devices-diagram} pour plus d'information concernant aux connections du d\'emo. La démo a 2 cas d'utilisation : 
 
 \begin{itemize} 
 
